@@ -1,0 +1,410 @@
+.service-details-page {
+  min-height: 100vh;
+  background: #f7f9fc;
+  color: #172033;
+}
+
+
+/* ================= HEADER ================= */
+
+.service-details-header {
+  max-width: 1200px;
+  margin: auto;
+  padding: 25px 20px;
+}
+
+.back-service-btn {
+  border: none;
+  background: white;
+  padding: 11px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #334155;
+  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+}
+
+
+/* ================= HERO ================= */
+
+.service-details-hero {
+  max-width: 1200px;
+  margin: 10px auto 40px;
+  padding: 35px;
+  background: white;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+}
+
+.service-main-icon {
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eff6ff;
+  border-radius: 25px;
+  font-size: 48px;
+}
+
+.service-main-content {
+  flex: 1;
+}
+
+.verified-service {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.service-main-content h1 {
+  margin: 8px 0;
+  font-size: 32px;
+}
+
+.service-main-content p {
+  color: #64748b;
+  line-height: 1.6;
+  max-width: 650px;
+}
+
+.service-main-info {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.service-price-box {
+  min-width: 160px;
+  padding: 22px;
+  background: #eff6ff;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.service-price-box small {
+  display: block;
+  color: #64748b;
+}
+
+.service-price-box strong {
+  display: block;
+  color: #2563eb;
+  font-size: 28px;
+  margin: 5px 0;
+}
+
+.service-price-box span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+
+/* ================= WORKERS ================= */
+
+.workers-section {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.workers-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 25px;
+}
+
+.workers-heading > div:first-child span {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.workers-heading h2 {
+  margin: 8px 0;
+  font-size: 30px;
+}
+
+.workers-heading p {
+  color: #64748b;
+}
+
+.available-count {
+  padding: 10px 15px;
+  background: #ecfdf5;
+  color: #15803d;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* ================= GRID ================= */
+
+.workers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+
+/* ================= CARD ================= */
+
+.worker-card {
+  background: white;
+  padding: 25px;
+  border-radius: 22px;
+  border: 1px solid #e5eaf1;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+  transition: 0.25s ease;
+}
+
+.worker-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
+}
+
+.worker-busy {
+  opacity: 0.72;
+}
+
+
+/* ================= WORKER TOP ================= */
+
+.worker-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.worker-avatar {
+  width: 70px;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eff6ff;
+  border-radius: 20px;
+
+  font-size: 38px;
+}
+
+.worker-available {
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.worker-unavailable {
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* ================= WORKER TEXT ================= */
+
+.worker-card h3 {
+  font-size: 22px;
+  margin: 18px 0 3px;
+}
+
+.worker-role {
+  color: #64748b;
+  margin: 0;
+}
+
+.worker-rating {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+  font-size: 13px;
+}
+
+.worker-rating strong {
+  color: #d97706;
+}
+
+.worker-rating span {
+  color: #94a3b8;
+}
+
+
+/* ================= DETAILS ================= */
+
+.worker-details {
+  padding: 15px 0;
+  border-top: 1px solid #edf1f5;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.worker-details div {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  color: #475569;
+  font-size: 13px;
+}
+
+.worker-details span {
+  color: #64748b;
+}
+
+
+/* ================= BOTTOM ================= */
+
+.worker-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  padding-top: 20px;
+}
+
+.worker-price small {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.worker-price strong {
+  display: block;
+  font-size: 23px;
+  margin-top: 4px;
+}
+
+.worker-bottom button {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 12px 17px;
+  border-radius: 11px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.worker-bottom button:hover {
+  background: #1d4ed8;
+}
+
+.worker-bottom button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+
+/* ================= SAFETY ================= */
+
+.service-safety {
+  max-width: 1200px;
+  margin: 35px auto 70px;
+  padding: 22px 25px;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  background: #eff6ff;
+  border-radius: 18px;
+}
+
+.service-safety > div:first-child {
+  font-size: 32px;
+}
+
+.service-safety h3 {
+  margin: 0 0 5px;
+}
+
+.service-safety p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+
+/* ================= NOT FOUND ================= */
+
+.service-not-found {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.service-not-found button {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 13px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 900px) {
+
+  .service-details-hero {
+    margin: 10px 20px 30px;
+    flex-wrap: wrap;
+  }
+
+  .service-price-box {
+    width: 100%;
+  }
+
+  .workers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .service-details-hero {
+    padding: 22px;
+  }
+
+  .service-main-icon {
+    width: 75px;
+    height: 75px;
+    min-width: 75px;
+    font-size: 35px;
+  }
+
+  .service-main-content h1 {
+    font-size: 25px;
+  }
+
+  .workers-heading {
+    display: block;
+  }
+
+  .available-count {
+    display: inline-block;
+    margin-top: 15px;
+  }
+
+  .workers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-safety {
+    margin: 30px 20px 50px;
+  }
+
+}

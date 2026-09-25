@@ -1,0 +1,70 @@
+<svg width="700" height="500" viewBox="0 0 700 500" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- House roof -->
+  <path
+    d="M120 245 L350 70 L580 245"
+    fill="none"
+    stroke="#75400F"
+    stroke-width="32"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- House body -->
+  <path
+    d="M190 215 V350 H510 V215"
+    fill="none"
+    stroke="#75400F"
+    stroke-width="28"
+  />
+
+  <!-- Window -->
+  <rect
+    x="305"
+    y="220"
+    width="90"
+    height="90"
+    fill="#75400F"
+  />
+
+  <line
+    x1="350"
+    y1="220"
+    x2="350"
+    y2="310"
+    stroke="white"
+    stroke-width="8"
+  />
+
+  <line
+    x1="305"
+    y1="265"
+    x2="395"
+    y2="265"
+    stroke="white"
+    stroke-width="8"
+  />
+
+  <!-- Golden wave -->
+  <path
+    d="M80 350
+       C180 430 270 430 360 380
+       C460 325 540 320 625 375"
+    fill="none"
+    stroke="#E4A914"
+    stroke-width="32"
+    stroke-linecap="round"
+  />
+
+  <!-- Second wave -->
+  <path
+    d="M115 375
+       C220 450 310 445 405 395
+       C490 350 550 350 625 390"
+    fill="none"
+    stroke="#C98A18"
+    stroke-width="10"
+    stroke-linecap="round"
+  />
+
+</svg>

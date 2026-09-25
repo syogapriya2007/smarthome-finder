@@ -1,5 +1,6 @@
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import "./Home.css";
 
 function Home() {
   const navigate = useNavigate();
@@ -11,13 +12,25 @@ function Home() {
 
       <nav className="home-navbar">
 
-        <div className="home-logo">
+        <div
+          className="home-logo"
+          onClick={() => navigate("/home")}
+          style={{ cursor: "pointer" }}
+        >
           🏠 <span>SmartHome</span>
         </div>
 
         <div className="home-nav-links">
 
-          <a href="/home">Home</a>
+          <a
+            href="/home"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/home");
+            }}
+          >
+            Home
+          </a>
 
           <a
             href="/search"
@@ -45,6 +58,18 @@ function Home() {
 
           <a href="#">
             About
+          </a>
+
+          {/* ⭐ NEW SERVICES NAVIGATION */}
+
+          <a
+            href="/services"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/services");
+            }}
+          >
+            Services
           </a>
 
         </div>
@@ -93,7 +118,7 @@ function Home() {
 
               <div>
                 <small>Location</small>
-                <strong>madurai</strong>
+                <strong>Madurai</strong>
               </div>
 
             </div>
@@ -232,7 +257,13 @@ function Home() {
 
           </div>
 
-          <a href="#">
+          <a
+            href="/search"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/search");
+            }}
+          >
             View all →
           </a>
 
@@ -241,47 +272,55 @@ function Home() {
 
         <div className="location-grid">
 
-          <div className="location-card chennai">
-
+          <div
+            className="location-card chennai"
+            onClick={() => navigate("/search")}
+            style={{ cursor: "pointer" }}
+          >
             <div>
               <small>Explore</small>
               <h3>Chennai</h3>
               <p>850+ Properties</p>
             </div>
-
           </div>
 
 
-          <div className="location-card bangalore">
-
+          <div
+            className="location-card bangalore"
+            onClick={() => navigate("/search")}
+            style={{ cursor: "pointer" }}
+          >
             <div>
               <small>Explore</small>
               <h3>Bangalore</h3>
               <p>720+ Properties</p>
             </div>
-
           </div>
 
 
-          <div className="location-card coimbatore">
-
+          <div
+            className="location-card coimbatore"
+            onClick={() => navigate("/search")}
+            style={{ cursor: "pointer" }}
+          >
             <div>
               <small>Explore</small>
               <h3>Coimbatore</h3>
               <p>430+ Properties</p>
             </div>
-
           </div>
 
 
-          <div className="location-card madurai">
-
+          <div
+            className="location-card madurai"
+            onClick={() => navigate("/search")}
+            style={{ cursor: "pointer" }}
+          >
             <div>
               <small>Explore</small>
               <h3>Madurai</h3>
               <p>310+ Properties</p>
             </div>
-
           </div>
 
         </div>
@@ -307,7 +346,13 @@ function Home() {
 
           </div>
 
-          <a href="#">
+          <a
+            href="/search"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/search");
+            }}
+          >
             View all →
           </a>
 
@@ -499,6 +544,224 @@ function Home() {
       </section>
 
 
+      {/* ===================================================== */}
+      {/* ================= HOME SERVICES ===================== */}
+      {/* ===================================================== */}
+
+      <section className="home-services">
+
+        <div className="services-title">
+
+          <span>
+            🔧 SMART HOME SERVICES
+          </span>
+
+          <h2>
+            Everything your home needs
+          </h2>
+
+          <p>
+            Don't just find a home.
+            Get everything you need to maintain it.
+          </p>
+
+        </div>
+
+
+        {/* SERVICE CARDS */}
+
+        <div className="service-shortcuts">
+
+
+          {/* AC */}
+
+          <button
+            type="button"
+            onClick={() => navigate("/services")}
+            className="service-shortcut-card"
+          >
+
+            <div className="service-shortcut-icon">
+              ❄️
+            </div>
+
+            <div>
+              <strong>
+                AC Service
+              </strong>
+
+              <small>
+                Repair & Installation
+              </small>
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+
+          {/* ELECTRICIAN */}
+
+          <button
+            type="button"
+            onClick={() => navigate("/services")}
+            className="service-shortcut-card"
+          >
+
+            <div className="service-shortcut-icon">
+              ⚡
+            </div>
+
+            <div>
+              <strong>
+                Electrician
+              </strong>
+
+              <small>
+                Electrical Repairs
+              </small>
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+
+          {/* CLEANING */}
+
+          <button
+            type="button"
+            onClick={() => navigate("/services")}
+            className="service-shortcut-card"
+          >
+
+            <div className="service-shortcut-icon">
+              🧹
+            </div>
+
+            <div>
+              <strong>
+                Home Cleaning
+              </strong>
+
+              <small>
+                Deep Cleaning
+              </small>
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+
+          {/* PLUMBER */}
+
+          <button
+            type="button"
+            onClick={() => navigate("/services")}
+            className="service-shortcut-card"
+          >
+
+            <div className="service-shortcut-icon">
+              🚰
+            </div>
+
+            <div>
+              <strong>
+                Plumber
+              </strong>
+
+              <small>
+                Repair & Installation
+              </small>
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+
+          {/* PAINTER */}
+
+          <button
+            type="button"
+            onClick={() => navigate("/services")}
+            className="service-shortcut-card"
+          >
+
+            <div className="service-shortcut-icon">
+              🎨
+            </div>
+
+            <div>
+              <strong>
+                Painter
+              </strong>
+
+              <small>
+                Interior & Exterior
+              </small>
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+
+          {/* CARPENTER */}
+
+          <button
+            type="button"
+            onClick={() => navigate("/services")}
+            className="service-shortcut-card"
+          >
+
+            <div className="service-shortcut-icon">
+              🪚
+            </div>
+
+            <div>
+              <strong>
+                Carpenter
+              </strong>
+
+              <small>
+                Furniture & Repair
+              </small>
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+        </div>
+
+
+        {/* SERVICE BUTTON */}
+
+        <button
+          type="button"
+          className="all-services-btn"
+          onClick={() => navigate("/services")}
+        >
+          Explore All Home Services →
+        </button>
+
+      </section>
+
+
       {/* ================= SMART MATCH ================= */}
 
       <section className="smart-section">
@@ -574,6 +837,102 @@ function Home() {
       </section>
 
 
+      {/* ================= WHY SMARTHOME ================= */}
+
+      <section className="home-services home-why">
+
+        <div className="services-title">
+
+          <span>
+            ✨ WHY SMARTHOME?
+          </span>
+
+          <h2>
+            Your complete home partner
+          </h2>
+
+          <p>
+            From finding your dream home to taking care of it,
+            SmartHome is here for you.
+          </p>
+
+        </div>
+
+
+        <div className="service-shortcuts">
+
+          <div className="service-shortcut-card">
+            <div className="service-shortcut-icon">
+              🏠
+            </div>
+
+            <div>
+              <strong>
+                Find Your Home
+              </strong>
+
+              <small>
+                Buy or rent verified properties
+              </small>
+            </div>
+          </div>
+
+
+          <div className="service-shortcut-card">
+            <div className="service-shortcut-icon">
+              👨‍🔧
+            </div>
+
+            <div>
+              <strong>
+                Trusted Professionals
+              </strong>
+
+              <small>
+                Verified home service workers
+              </small>
+            </div>
+          </div>
+
+
+          <div className="service-shortcut-card">
+            <div className="service-shortcut-icon">
+              📅
+            </div>
+
+            <div>
+              <strong>
+                Easy Booking
+              </strong>
+
+              <small>
+                Choose date and time
+              </small>
+            </div>
+          </div>
+
+
+          <div className="service-shortcut-card">
+            <div className="service-shortcut-icon">
+              ⭐
+            </div>
+
+            <div>
+              <strong>
+                Ratings & Reviews
+              </strong>
+
+              <small>
+                Choose highly rated professionals
+              </small>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+
       {/* ================= FOOTER ================= */}
 
       <footer className="home-footer">
@@ -597,16 +956,38 @@ function Home() {
             Explore
           </h4>
 
-          <a href="#">
+          <a
+            href="/search"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/search");
+            }}
+          >
             Buy
           </a>
 
-          <a href="#">
+          <a
+            href="/search"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/search");
+            }}
+          >
             Rent
           </a>
 
           <a href="#">
             Sell
+          </a>
+
+          <a
+            href="/services"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/services");
+            }}
+          >
+            Home Services
           </a>
 
         </div>

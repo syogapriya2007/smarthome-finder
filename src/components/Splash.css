@@ -1,0 +1,184 @@
+.splash-page {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(
+    135deg,
+    #fffaf2,
+    #ffffff,
+    #fff5dc
+  );
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background decoration */
+
+.splash-page::before {
+  content: "";
+  position: absolute;
+
+  width: 350px;
+  height: 350px;
+
+  background: #f7dfaa;
+  opacity: 0.25;
+
+  border-radius: 50%;
+
+  top: -150px;
+  left: -120px;
+}
+
+.splash-page::after {
+  content: "";
+  position: absolute;
+
+  width: 400px;
+  height: 400px;
+
+  background: #d49a45;
+  opacity: 0.08;
+
+  border-radius: 50%;
+
+  bottom: -200px;
+  right: -150px;
+}
+
+/* Logo */
+
+.splash-logo {
+  width: 500px;
+  max-width: 75vw;
+
+  cursor: pointer;
+
+  position: relative;
+  z-index: 2;
+
+  transition: 0.3s ease;
+
+  animation: logoShow 1s ease;
+}
+
+.splash-logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+
+  object-fit: contain;
+}
+
+.splash-logo:hover {
+  transform: scale(1.04);
+
+  filter: drop-shadow(
+    0 15px 25px rgba(130, 80, 20, 0.25)
+  );
+}
+
+/* Tagline */
+
+.splash-text {
+  margin-top: -10px;
+
+  font-size: 21px;
+  font-weight: 500;
+
+  color: #6d5140;
+
+  position: relative;
+  z-index: 2;
+}
+
+/* Button */
+
+.enter-button {
+  margin-top: 20px;
+
+  padding: 14px 32px;
+
+  border: none;
+  border-radius: 30px;
+
+  background: linear-gradient(
+    135deg,
+    #8b4f12,
+    #e6a719
+  );
+
+  color: white;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  position: relative;
+  z-index: 2;
+
+  box-shadow:
+    0 10px 25px rgba(150, 90, 20, 0.25);
+
+  transition: 0.3s ease;
+}
+
+.enter-button:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 15px 30px rgba(150, 90, 20, 0.35);
+}
+
+/* Small text */
+
+.click-text {
+  font-size: 13px;
+
+  color: #9b8b7c;
+
+  margin-top: 12px;
+
+  position: relative;
+  z-index: 2;
+}
+
+/* Animation */
+
+@keyframes logoShow {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+  .splash-logo {
+    width: 85vw;
+  }
+
+  .splash-text {
+    font-size: 17px;
+  }
+
+  .enter-button {
+    padding: 12px 26px;
+    font-size: 15px;
+  }
+}

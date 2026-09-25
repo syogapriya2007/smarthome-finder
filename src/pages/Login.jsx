@@ -1,11 +1,27 @@
 import "../App.css";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Login() {
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    navigate("/home");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // Demo role login
+    // Later this will come from backend/database
+
+    if (email === "server@gmail.com") {
+      navigate("/server-dashboard");
+    } else if (email === "owner@gmail.com") {
+      navigate("/owner-dashboard");
+    } else {
+      navigate("/home");
+    }
   };
 
   return (
@@ -81,7 +97,9 @@ function Login() {
           </p>
 
 
-          <form onSubmit={(e) => e.preventDefault()}>
+          {/* LOGIN FORM */}
+
+          <form onSubmit={handleLogin}>
 
             {/* EMAIL */}
 
@@ -96,6 +114,9 @@ function Login() {
               <input
                 type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
 
             </div>
@@ -112,13 +133,22 @@ function Login() {
               <span>🔒</span>
 
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
 
-              <span className="eye">
-                👁️
-              </span>
+              <button
+                type="button"
+                className="eye"
+                onClick={() =>
+                  setShowPassword(!showPassword)
+                }
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
 
             </div>
 
@@ -142,12 +172,11 @@ function Login() {
             </div>
 
 
-            {/* LOGIN BUTTON */}
+            {/* LOGIN */}
 
             <button
               className="login-button"
-              type="button"
-              onClick={handleLogin}
+              type="submit"
             >
               Sign In →
             </button>
@@ -164,7 +193,7 @@ function Login() {
           </div>
 
 
-          {/* SOCIAL */}
+          {/* SOCIAL LOGIN */}
 
           <div className="social-login">
 
