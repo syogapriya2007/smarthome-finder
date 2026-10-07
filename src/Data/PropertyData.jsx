@@ -1,3 +1,4 @@
+
 const areas = [
   "KK Nagar",
   "Anna Nagar",
@@ -24,10 +25,10 @@ const areas = [
 const areaShortNames = {
   "KK Nagar": "KK Nagar",
   "Anna Nagar": "Anna Nagar",
-  "Tallakulam": "Tallakulam",
-  "Thirunagar": "Thirunagar",
-  "Palanganatham": "Palanganatham",
-  "Arapalayam": "Arapalayam",
+  Tallakulam: "Tallakulam",
+  Thirunagar: "Thirunagar",
+  Palanganatham: "Palanganatham",
+  Arapalayam: "Arapalayam",
   Simmakkal: "Simmakkal",
   Mattuthavani: "Mattuthavani",
   Anaiyur: "Anaiyur",
@@ -69,6 +70,7 @@ const houseStyles = [
     rent: [12000, 13000, 14000, 15000, 16000],
     sale: 0,
   },
+
   {
     title: "Spacious Independent House",
     type: "Rent",
@@ -78,6 +80,7 @@ const houseStyles = [
     rent: [17000, 18000, 19000, 20000, 22000],
     sale: 0,
   },
+
   {
     title: "Premium Family Villa",
     type: "Buy",
@@ -87,6 +90,7 @@ const houseStyles = [
     rent: 0,
     sale: 7500000,
   },
+
   {
     title: "Comfortable 2BHK Home",
     type: "Rent",
@@ -96,6 +100,7 @@ const houseStyles = [
     rent: [10000, 11500, 12500, 13500, 14500],
     sale: 0,
   },
+
   {
     title: "Luxury 3BHK Villa",
     type: "Buy",
@@ -108,8 +113,22 @@ const houseStyles = [
 ];
 
 /*
-  20 Madurai areas × 5 properties
-  = 100 properties
+  ============================================================
+  SMART HOME PROPERTY DATA
+  ============================================================
+
+  20 Madurai Areas
+  ×
+  5 Properties Per Area
+  =
+  100 Properties
+
+  Booking:
+  booked: false
+
+  IMPORTANT:
+  Actual booking status will be controlled using
+  localStorage in bookingStorage.js.
 */
 
 const properties = areas.flatMap((area, areaIndex) => {
@@ -120,67 +139,116 @@ const properties = areas.flatMap((area, areaIndex) => {
 
     let price;
 
+    // -------------------------------
+    // RENT PRICE
+    // -------------------------------
     if (isRent) {
       price =
         style.rent[
           (areaIndex + houseIndex) % style.rent.length
         ];
-    } else {
-      /*
-        Sale price changes slightly area by area
-        so every property has a different price.
-      */
+    }
+
+    // -------------------------------
+    // SALE PRICE
+    // -------------------------------
+    else {
       price =
         style.sale +
         areaIndex * 150000 +
         houseIndex * 250000;
     }
 
+    // -------------------------------
+    // SMART MATCH %
+    // -------------------------------
     const match =
       90 +
       ((areaIndex * 3 + houseIndex * 2) % 10);
 
-    const image = houseImages[
-      (id - 1) % houseImages.length
-    ];
+    // -------------------------------
+    // PROPERTY IMAGE
+    // -------------------------------
+    const image =
+      houseImages[(id - 1) % houseImages.length];
 
+    // -------------------------------
+    // PROPERTY OBJECT
+    // -------------------------------
     return {
+      // Unique property ID
       id,
 
+      // Property name
       title: `${style.title} - ${areaShortNames[area]}`,
 
+      // Location
       location: area,
 
+      // Rent / Buy
       type: style.type,
 
+      // Price
       price,
 
+      // Smart match percentage
       match,
 
+      // Property size details
       bedrooms: style.bedrooms,
-
       bathrooms: style.bathrooms,
-
       area: style.area,
-
       sqft: style.area,
 
+      // Main image
       image,
 
+      // Property gallery
       images: [
         image,
+        houseImages[(id) % houseImages.length],
         houseImages[(id + 1) % houseImages.length],
-        houseImages[(id + 2) % houseImages.length],
       ],
 
+      // Verification
       verified: true,
 
+      // ------------------------------------------------
+      // BOOKING STATUS
+      // ------------------------------------------------
+      // Default value is false.
+      // After booking, bookingStorage.js will maintain
+      // the actual booked property ID.
+      // ------------------------------------------------
+      booked: false,
+
+      // Property availability
+      status: "AVAILABLE",
+
+      // ------------------------------------------------
+      // OWNER DETAILS
+      // ------------------------------------------------
       ownerName: `SmartHome Owner ${id}`,
 
-      ownerPhone: "9876543210",
+      /*
+        Demo owner phone number.
 
-      description: `A beautiful ${style.bedrooms}BHK ${style.type.toLowerCase()} property in ${area}, Madurai. This home offers comfortable living space, good surroundings and convenient access to nearby facilities.`,
+        For real SMS:
+        replace this with the actual owner's
+        registered phone number.
+      */
+      ownerPhone: "9994875018",
 
+      // ------------------------------------------------
+      // DESCRIPTION
+      // ------------------------------------------------
+      description: `A beautiful ${style.bedrooms}BHK ${
+        style.type.toLowerCase()
+      } property in ${area}, Madurai. This home offers comfortable living space, good surroundings and convenient access to nearby facilities.`,
+
+      // ------------------------------------------------
+      // AMENITIES
+      // ------------------------------------------------
       amenities: [
         "Parking",
         "24/7 Water Supply",
@@ -190,15 +258,28 @@ const properties = areas.flatMap((area, areaIndex) => {
         "Nearby Shops",
       ],
 
-      facing: ["East", "West", "North", "South"][
+      // ------------------------------------------------
+      // FACING
+      // ------------------------------------------------
+      facing: [
+        "East",
+        "West",
+        "North",
+        "South",
+      ][
         (areaIndex + houseIndex) % 4
       ],
 
+      // ------------------------------------------------
+      // FURNISHING
+      // ------------------------------------------------
       furnishing: [
         "Fully Furnished",
         "Semi Furnished",
         "Unfurnished",
-      ][(areaIndex + houseIndex) % 3],
+      ][
+        (areaIndex + houseIndex) % 3
+      ],
     };
   });
 });

@@ -1,0 +1,406 @@
+/* ================================
+   PROFILE PAGE
+================================ */
+
+.profile-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  color: #172033;
+}
+
+/* NAVBAR */
+
+.profile-navbar {
+  height: 75px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7%;
+  box-shadow: 0 3px 18px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.profile-logo {
+  text-decoration: none;
+  color: #172033;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.profile-navbar nav a {
+  text-decoration: none;
+  color: #596273;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.profile-navbar nav a:hover,
+.profile-navbar nav a.profile-active {
+  color: #e63962;
+}
+
+/* CONTAINER */
+
+.profile-container {
+  width: 86%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 50px 0 80px;
+}
+
+/* TITLE */
+
+.profile-title {
+  margin-bottom: 35px;
+}
+
+.profile-title > span {
+  color: #e63962;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.profile-title h1 {
+  margin: 8px 0;
+  font-size: 38px;
+}
+
+.profile-title p {
+  margin: 0;
+  color: #7b8495;
+  font-size: 15px;
+}
+
+/* LAYOUT */
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* PROFILE CARD */
+
+.profile-card {
+  background: white;
+  border-radius: 22px;
+  padding: 35px 25px;
+  text-align: center;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.07);
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    #e63962,
+    #ff7a95
+  );
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(230, 57, 98, 0.25);
+}
+
+.profile-card h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.profile-role {
+  color: #7b8495;
+  margin: 7px 0 28px;
+}
+
+/* USER INFO */
+
+.profile-info {
+  text-align: left;
+  border-top: 1px solid #eeeeee;
+  padding-top: 20px;
+}
+
+.profile-info > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+.profile-info > div > span {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #fff0f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+}
+
+.profile-info section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.profile-info small {
+  color: #8b94a4;
+  font-size: 11px;
+}
+
+.profile-info strong {
+  font-size: 13px;
+  word-break: break-word;
+}
+
+/* LOGOUT */
+
+.logout-btn {
+  width: 100%;
+  border: none;
+  padding: 13px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: #172033;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background: #e63962;
+}
+
+/* RIGHT SIDE */
+
+.profile-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* WELCOME */
+
+.welcome-card {
+  background: linear-gradient(
+    135deg,
+    #172033,
+    #303d59
+  );
+  color: white;
+  border-radius: 22px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.welcome-card span {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #ffb6c5;
+  font-weight: 800;
+}
+
+.welcome-card h2 {
+  font-size: 28px;
+  margin: 8px 0;
+}
+
+.welcome-card p {
+  color: #c8cfdb;
+  margin: 0;
+}
+
+.welcome-house {
+  font-size: 70px;
+}
+
+/* STATISTICS */
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.profile-stat {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  text-decoration: none;
+  color: #172033;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.05);
+  transition: 0.2s;
+}
+
+.profile-stat:hover {
+  transform: translateY(-4px);
+}
+
+.stat-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 13px;
+  background: #fff0f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.profile-stat div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.profile-stat strong {
+  font-size: 23px;
+}
+
+.profile-stat span {
+  color: #7b8495;
+  font-size: 12px;
+}
+
+/* QUICK ACTIONS */
+
+.quick-actions {
+  background: white;
+  padding: 25px;
+  border-radius: 22px;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.05);
+}
+
+.quick-actions h2 {
+  margin: 0 0 20px;
+  font-size: 21px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.action-grid a {
+  text-decoration: none;
+  color: #172033;
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  padding: 17px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.action-grid a:first-child {
+  background: #fff8ed;
+}
+
+.action-grid a:nth-child(2) {
+  background: #fff0f4;
+}
+
+.action-grid a:nth-child(3) {
+  background: #eef5ff;
+}
+
+.action-grid a:nth-child(4) {
+  background: #effbf4;
+}
+
+.action-grid a:hover {
+  transform: translateY(-3px);
+  border-color: #e63962;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+    box-sizing: border-box;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+  .profile-navbar {
+    height: auto;
+    padding: 15px 5%;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .profile-navbar nav {
+    gap: 14px;
+    font-size: 12px;
+  }
+
+  .profile-container {
+    width: 92%;
+    padding-top: 35px;
+  }
+
+  .profile-title h1 {
+    font-size: 30px;
+  }
+
+  .profile-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-card {
+    padding: 24px;
+  }
+
+  .welcome-card h2 {
+    font-size: 23px;
+  }
+
+  .welcome-house {
+    font-size: 50px;
+  }
+}

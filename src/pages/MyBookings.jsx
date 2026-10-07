@@ -1,182 +1,349 @@
-
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./MyBookings.css";
 
-function MyBookings() {
-  const bookings = [
-    {
-      id: 1,
-      property: "Luxury 4BHK Family Villa",
-      location: "KK Nagar, Madurai",
-      image: "/images/house9.jpg",
-      price: "₹85 Lakhs",
-      date: "10 Sep 2026",
-      time: "11:00 AM",
-      status: "Pending",
-    },
-  ];
+const MyBookings = () => {
+  const navigate = useNavigate();
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    loadBookings();
+  }, []);
+
+  const loadBookings = () => {
+    try {
+      const savedBookings =
+        JSON.parse(localStorage.getItem("bookings")) || [];
+
+      // ==========================================
+      // REMOVE DUPLICATE PROPERTY BOOKINGS
+      // Same house should appear only ONCE
+      // ==========================================
+
+      const uniqueBookings = [];
+      const seenProperties = new Set();
+
+      savedBookings.forEach((booking) => {
+        const propertyKey =
+          booking.propertyId ||
+          booking.propertyTitle ||
+          booking.title ||
+          booking.location;
+
+        if (!seenProperties.has(String(propertyKey))) {
+          seenProperties.add(String(propertyKey));
+          uniqueBookings.push(booking);
+        }
+      });
+
+      // Latest first
+      uniqueBookings.reverse();
+
+      setBookings(uniqueBookings);
+
+      // ==========================================
+      // CLEAN DUPLICATES FROM LOCAL STORAGE TOO
+      // ==========================================
+
+      localStorage.setItem(
+        "bookings",
+        JSON.stringify(uniqueBookings.slice().reverse())
+      );
+
+    } catch (error) {
+      console.error("Unable to load bookings:", error);
+      setBookings([]);
+    }
+  };
+
+  // ==========================================
+  // DELETE ONE BOOKING
+  // ==========================================
+
+  const handleDelete = (bookingToDelete) => {
+    const savedBookings =
+      JSON.parse(localStorage.getItem("bookings")) || [];
+
+    const updatedBookings = savedBookings.filter(
+      (booking) =>
+        String(booking.bookingId) !==
+        String(bookingToDelete.bookingId)
+    );
+
+    localStorage.setItem(
+      "bookings",
+      JSON.stringify(updatedBookings)
+    );
+
+    loadBookings();
+  };
+
+  // ==========================================
+  // OPEN PROPERTY
+  // ==========================================
+
+  const handleViewProperty = (booking) => {
+    if (booking.propertyId) {
+      navigate(`/property/${booking.propertyId}`);
+    }
+  };
 
   return (
     <div className="my-bookings-page">
 
-      {/* NAVBAR */}
-      <header className="bookings-navbar">
+      {/* ================= HEADER ================= */}
 
-        <Link to="/home" className="bookings-logo">
-          🏠 <span>Smart</span>Home
-        </Link>
+      <header className="my-bookings-header">
 
-        <nav>
-          <Link to="/home">Home</Link>
-          <Link to="/search">Properties</Link>
-          <Link to="/my-bookings" className="active">
-            My Bookings
-          </Link>
-        </nav>
+        <div
+          className="my-bookings-logo"
+          onClick={() => navigate("/home")}
+        >
+          🏠 <span>SmartHome</span>
+        </div>
+
+        <button
+          className="back-home-btn"
+          onClick={() => navigate("/home")}
+        >
+          🏠 Home
+        </button>
 
       </header>
 
-      <main className="bookings-container">
+      {/* ================= MAIN ================= */}
 
-        {/* HEADER */}
-        <div className="bookings-header">
+      <main className="my-bookings-container">
+
+        <div className="page-heading">
+
+          <div className="heading-icon">
+            📋
+          </div>
 
           <div>
-            <span className="bookings-badge">
-              📋 Booking Management
-            </span>
-
             <h1>My Bookings</h1>
 
             <p>
-              Track your property booking requests and status.
+              View all your confirmed property bookings
             </p>
           </div>
 
-          <Link to="/search" className="browse-btn">
-            🔍 Browse Properties
-          </Link>
-
         </div>
 
-        {/* BOOKING LIST */}
-        <div className="booking-list">
+        {/* ================= NO BOOKINGS ================= */}
 
-          {bookings.map((booking) => (
+        {bookings.length === 0 ? (
 
-            <div className="booking-card" key={booking.id}>
+          <div className="no-bookings-card">
 
-              {/* IMAGE */}
-              <div className="booking-image">
-
-                <img
-                  src={booking.image}
-                  alt={booking.property}
-                />
-
-                <span className="status-badge pending">
-                  🟡 {booking.status}
-                </span>
-
-              </div>
-
-              {/* DETAILS */}
-              <div className="booking-details">
-
-                <div className="booking-property-top">
-
-                  <div>
-                    <span className="sale-type">
-                      FOR SALE
-                    </span>
-
-                    <h2>
-                      {booking.property}
-                    </h2>
-
-                    <p>
-                      📍 {booking.location}
-                    </p>
-                  </div>
-
-                  <strong className="booking-price">
-                    {booking.price}
-                  </strong>
-
-                </div>
-
-                {/* VISIT DETAILS */}
-                <div className="booking-info">
-
-                  <div>
-                    <span>📅</span>
-                    <div>
-                      <small>Booking Date</small>
-                      <strong>{booking.date}</strong>
-                    </div>
-                  </div>
-
-                  <div>
-                    <span>⏰</span>
-                    <div>
-                      <small>Preferred Time</small>
-                      <strong>{booking.time}</strong>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* STATUS */}
-                <div className="booking-status">
-
-                  <div className="status-icon">
-                    🕐
-                  </div>
-
-                  <div>
-                    <strong>
-                      Waiting for owner confirmation
-                    </strong>
-
-                    <p>
-                      Your booking request has been sent successfully.
-                    </p>
-                  </div>
-
-                </div>
-
-                {/* BUTTONS */}
-                <div className="booking-actions">
-
-                  <Link
-                    to="/property/2"
-                    className="view-property"
-                  >
-                    🏠 View Property
-                  </Link>
-
-                  <button
-                    type="button"
-                    className="cancel-booking"
-                  >
-                    Cancel Request
-                  </button>
-
-                </div>
-
-              </div>
-
+            <div className="empty-icon">
+              🏠
             </div>
 
-          ))}
+            <h2>No Bookings Yet</h2>
 
-        </div>
+            <p>
+              You have not booked any property yet.
+            </p>
+
+            <button
+              className="explore-btn"
+              onClick={() => navigate("/search")}
+            >
+              🔍 Explore Properties
+            </button>
+
+          </div>
+
+        ) : (
+
+          <div className="bookings-list">
+
+            {bookings.map((booking, index) => (
+
+              <div
+                className="booking-card"
+                key={
+                  booking.bookingId ||
+                  booking.propertyId ||
+                  `${booking.propertyTitle}-${index}`
+                }
+              >
+
+                {/* ================= IMAGE ================= */}
+
+                <div className="booking-card-image">
+
+                  <img
+                    src={
+                      booking.image ||
+                      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1000&q=90"
+                    }
+                    alt={
+                      booking.propertyTitle ||
+                      "Booked Property"
+                    }
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1000&q=90";
+                    }}
+                  />
+
+                  <span className="confirmed-badge">
+                    ✓ Confirmed
+                  </span>
+
+                </div>
+
+                {/* ================= DETAILS ================= */}
+
+                <div className="booking-card-content">
+
+                  <div className="property-top">
+
+                    <div>
+
+                      <h2>
+                        {booking.propertyTitle ||
+                          booking.title ||
+                          "Selected Property"}
+                      </h2>
+
+                      <p className="property-location">
+                        📍{" "}
+                        {booking.location ||
+                          "Madurai"}
+                      </p>
+
+                    </div>
+
+                    {booking.price && (
+                      <div className="property-price">
+                        {booking.price}
+                      </div>
+                    )}
+
+                  </div>
+
+                  <div className="booking-line" />
+
+                  {/* ================= USER DETAILS ================= */}
+
+                  <div className="booking-info-grid">
+
+                    <div className="info-item">
+                      <span>👤 Name</span>
+                      <strong>
+                        {booking.name || "-"}
+                      </strong>
+                    </div>
+
+                    <div className="info-item">
+                      <span>📱 Phone</span>
+                      <strong>
+                        {booking.phone || "-"}
+                      </strong>
+                    </div>
+
+                    <div className="info-item">
+                      <span>✉️ Email</span>
+                      <strong>
+                        {booking.email || "-"}
+                      </strong>
+                    </div>
+
+                    <div className="info-item">
+                      <span>📅 Date</span>
+                      <strong>
+                        {booking.date || "-"}
+                      </strong>
+                    </div>
+
+                    <div className="info-item">
+                      <span>⏰ Time</span>
+                      <strong>
+                        {booking.time || "-"}
+                      </strong>
+                    </div>
+
+                    <div className="info-item">
+                      <span>🔖 Booking ID</span>
+                      <strong>
+                        {booking.bookingId
+                          ? String(
+                              booking.bookingId
+                            ).startsWith("SH-")
+                            ? booking.bookingId
+                            : `SH-${String(
+                                booking.bookingId
+                              ).slice(-6)}`
+                          : `SH-${String(
+                              booking.id ||
+                                Date.now()
+                            ).slice(-6)}`}
+                      </strong>
+                    </div>
+
+                  </div>
+
+                  {/* ================= STATUS ================= */}
+
+                  <div className="booking-status">
+                    <div className="status-icon">
+                      ✓
+                    </div>
+
+                    <div>
+                      <strong>
+                        Booking Confirmed
+                      </strong>
+
+                      <p>
+                        Your booking request has
+                        been successfully received.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* ================= BUTTONS ================= */}
+
+                  <div className="booking-actions">
+
+                    <button
+                      className="view-property-btn"
+                      onClick={() =>
+                        handleViewProperty(booking)
+                      }
+                    >
+                      🏠 View Property
+                    </button>
+
+                    <button
+                      className="delete-booking-btn"
+                      onClick={() =>
+                        handleDelete(booking)
+                      }
+                    >
+                      🗑 Remove
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
 
       </main>
 
     </div>
   );
-}
+};
 
 export default MyBookings;

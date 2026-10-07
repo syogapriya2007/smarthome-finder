@@ -2249,7 +2249,7 @@ body {
     justify-content: flex-start;
   }
 
-}```css
+}
 /* =========================================
    SMART HOME - OWNER DASHBOARD
 ========================================= */
@@ -3880,7 +3880,7 @@ body {
 .tracking-info-item strong {
   font-size: 15px;
 }
-```css
+
 /* =====================================================
    SMART HOME - WORKER TRACKING PAGE
    ===================================================== */
@@ -4685,7 +4685,7 @@ body {
     flex-direction: column;
   }
 
-}```css
+}
 /* =====================================================
    SMART HOME - OWNER DASHBOARD
    ===================================================== */
@@ -5853,6 +5853,483 @@ body {
   .cancel-property-btn,
   .save-property-btn {
     width: 100%;
+  }
+
+}.property-main-image {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  border-radius: 25px;
+  display: block;
+}/* ================================
+   BOOK THIS PROPERTY
+================================ */
+
+.book-btn {
+  display: flex !important;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 20px;
+  margin-top: 14px;
+
+  background: linear-gradient(135deg, #172033, #293750);
+  color: white !important;
+
+  text-decoration: none !important;
+  border-radius: 16px;
+
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+
+  transition: all 0.3s ease;
+}
+
+.book-btn:hover {
+  background: linear-gradient(135deg, #e63962, #ff6684);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(230, 57, 98, 0.25);
+}
+
+.book-btn > span:first-child {
+  font-size: 25px;
+  flex-shrink: 0;
+}
+
+.book-btn > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.book-btn > div b {
+  color: white;
+  font-size: 16px;
+}
+
+.book-btn > div small {
+  color: #d8deea;
+  font-size: 12px;
+}
+
+.book-btn > span:last-child {
+  font-size: 22px;
+  color: white;
+}/* =====================================================
+   SMART HOME ROLE SELECTION LOGIN
+   ===================================================== */
+
+.role-login-page {
+  min-height: 100vh;
+  display: flex;
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(99, 102, 241, 0.15),
+      transparent 35%
+    ),
+    linear-gradient(135deg, #eef2ff, #f8fafc);
+  overflow: hidden;
+}
+
+
+/* =========================
+   LEFT SIDE
+   ========================= */
+
+.role-left {
+  width: 50%;
+  min-height: 100vh;
+  position: relative;
+  padding: 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      135deg,
+      #4f46e5,
+      #6366f1 50%,
+      #7c3aed
+    );
+  color: white;
+}
+
+.role-left::before {
+  content: "";
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  top: -100px;
+  right: -100px;
+}
+
+.role-left::after {
+  content: "";
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  bottom: -100px;
+  left: -100px;
+}
+
+
+/* BRAND */
+
+.role-brand {
+  position: relative;
+  z-index: 2;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.role-brand span {
+  margin-left: 8px;
+}
+
+
+/* LEFT CONTENT */
+
+.role-left-content {
+  position: relative;
+  z-index: 2;
+  max-width: 540px;
+}
+
+.role-small-title {
+  font-size: 13px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  opacity: 0.85;
+  margin-bottom: 18px;
+}
+
+.role-left-content h1 {
+  font-size: 58px;
+  line-height: 1.05;
+  margin: 0 0 22px;
+  font-weight: 800;
+}
+
+.role-left-content h1 span {
+  color: #fde68a;
+}
+
+.role-left-content > p:not(.role-small-title) {
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 500px;
+  opacity: 0.9;
+}
+
+
+/* STATS */
+
+.role-stats {
+  display: flex;
+  gap: 45px;
+  margin-top: 38px;
+}
+
+.role-stats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-stats strong {
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.role-stats span {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+
+/* FLOATING HOUSE */
+
+.role-house {
+  position: absolute;
+  z-index: 1;
+  right: 60px;
+  bottom: 45px;
+  font-size: 95px;
+  opacity: 0.18;
+  transform: rotate(-5deg);
+}
+
+
+/* =========================
+   RIGHT SIDE
+   ========================= */
+
+.role-right {
+  width: 50%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+
+/* CARD */
+
+.role-card {
+  width: 100%;
+  max-width: 520px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 42px;
+  border-radius: 28px;
+  box-shadow:
+    0 25px 70px rgba(15, 23, 42, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+
+/* ICON */
+
+.role-icon {
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    #eef2ff,
+    #ddd6fe
+  );
+  border-radius: 20px;
+  font-size: 31px;
+  margin-bottom: 20px;
+}
+
+
+/* HEADING */
+
+.role-card h2 {
+  margin: 0;
+  font-size: 30px;
+  color: #111827;
+  font-weight: 800;
+}
+
+.role-subtitle {
+  margin: 9px 0 28px;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+
+/* =========================
+   ROLE OPTIONS
+   ========================= */
+
+.role-option {
+  width: 100%;
+  border: none;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 19px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: white;
+  border: 1px solid #e5e7eb;
+  font-family: inherit;
+}
+
+
+/* ICON */
+
+.role-option-icon {
+  width: 55px;
+  height: 55px;
+  min-width: 55px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 27px;
+  margin-right: 16px;
+}
+
+
+/* TEXT */
+
+.role-option-text {
+  flex: 1;
+}
+
+.role-option-text h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  color: #111827;
+}
+
+.role-option-text p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+
+/* ARROW */
+
+.role-arrow {
+  font-size: 25px;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+}
+
+
+/* BUYER */
+
+.buyer-option .role-option-icon {
+  background: #eef2ff;
+}
+
+.buyer-option:hover {
+  border-color: #6366f1;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(99, 102, 241, 0.15);
+}
+
+.buyer-option:hover .role-arrow {
+  transform: translateX(5px);
+}
+
+
+/* OWNER */
+
+.owner-option .role-option-icon {
+  background: #fef3c7;
+}
+
+.owner-option:hover {
+  border-color: #f59e0b;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(245, 158, 11, 0.15);
+}
+
+.owner-option:hover .role-arrow {
+  transform: translateX(5px);
+}
+
+
+/* SERVICER */
+
+.servicer-option .role-option-icon {
+  background: #dcfce7;
+}
+
+.servicer-option:hover {
+  border-color: #22c55e;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(34, 197, 94, 0.15);
+}
+
+.servicer-option:hover .role-arrow {
+  transform: translateX(5px);
+}
+
+
+/* BOTTOM */
+
+.role-bottom-text {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 12px;
+  margin-top: 25px;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 900px) {
+
+  .role-login-page {
+    flex-direction: column;
+  }
+
+  .role-left {
+    width: 100%;
+    min-height: 45vh;
+    padding: 35px;
+  }
+
+  .role-left-content h1 {
+    font-size: 42px;
+  }
+
+  .role-stats {
+    gap: 25px;
+  }
+
+  .role-house {
+    display: none;
+  }
+
+  .role-right {
+    width: 100%;
+    min-height: 55vh;
+    padding: 25px;
+  }
+
+  .role-card {
+    padding: 30px;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .role-left {
+    padding: 25px;
+  }
+
+  .role-left-content h1 {
+    font-size: 36px;
+  }
+
+  .role-left-content > p:not(.role-small-title) {
+    font-size: 14px;
+  }
+
+  .role-stats {
+    gap: 20px;
+  }
+
+  .role-stats strong {
+    font-size: 20px;
+  }
+
+  .role-card {
+    padding: 23px;
+    border-radius: 22px;
+  }
+
+  .role-card h2 {
+    font-size: 24px;
   }
 
 }

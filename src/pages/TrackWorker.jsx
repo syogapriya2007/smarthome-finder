@@ -1,4 +1,3 @@
-
 import {
   MapContainer,
   TileLayer,
@@ -13,9 +12,9 @@ import "leaflet/dist/leaflet.css";
 import { useNavigate, useParams } from "react-router-dom";
 import "../App.css";
 
-// ===============================
+// ======================================================
 // WORKER ICON
-// ===============================
+// ======================================================
 
 const workerIcon = new L.DivIcon({
   className: "worker-map-icon",
@@ -28,9 +27,9 @@ const workerIcon = new L.DivIcon({
   iconAnchor: [22, 22],
 });
 
-// ===============================
+// ======================================================
 // USER ICON
-// ===============================
+// ======================================================
 
 const userIcon = new L.DivIcon({
   className: "user-map-icon",
@@ -43,39 +42,261 @@ const userIcon = new L.DivIcon({
   iconAnchor: [22, 22],
 });
 
-// ===============================
-// TRACK WORKER PAGE
-// ===============================
+// ======================================================
+// DIFFERENT WORKER DETAILS
+// ======================================================
+
+const workerDetails = {
+  Raj: {
+    profession: "AC Service Expert",
+    experience: "5+ Years",
+    address: "Aunppanadi, Madurai",
+    eta: "15 min",
+    etaText: "15 minutes",
+
+    userLocation: [9.9252, 78.1198],
+    workerLocation: [9.9185, 78.1105],
+
+    route: [
+      [9.9185, 78.1105],
+      [9.9200, 78.1125],
+      [9.9220, 78.1150],
+      [9.9240, 78.1170],
+      [9.9252, 78.1198],
+    ],
+  },
+
+  Arun: {
+    profession: "Electrical Technician",
+    experience: "4+ Years",
+    address: "Theppakulam, Madurai",
+    eta: "20 min",
+    etaText: "20 minutes",
+
+    userLocation: [9.9177, 78.1196],
+    workerLocation: [9.9105, 78.1160],
+
+    route: [
+      [9.9105, 78.1160],
+      [9.9125, 78.1170],
+      [9.9145, 78.1180],
+      [9.9160, 78.1190],
+      [9.9177, 78.1196],
+    ],
+  },
+
+  Bala: {
+    profession: "Professional Plumber",
+    experience: "6+ Years",
+    address: "Anna Nagar, Madurai",
+    eta: "18 min",
+    etaText: "18 minutes",
+
+    userLocation: [9.9415, 78.1370],
+    workerLocation: [9.9480, 78.1300],
+
+    route: [
+      [9.9480, 78.1300],
+      [9.9460, 78.1320],
+      [9.9445, 78.1340],
+      [9.9430, 78.1360],
+      [9.9415, 78.1370],
+    ],
+  },
+
+  Priya: {
+    profession: "Home Cleaning Expert",
+    experience: "3+ Years",
+    address: "KK Nagar, Madurai",
+    eta: "12 min",
+    etaText: "12 minutes",
+
+    userLocation: [9.9380, 78.1320],
+    workerLocation: [9.9440, 78.1250],
+
+    route: [
+      [9.9440, 78.1250],
+      [9.9420, 78.1270],
+      [9.9405, 78.1290],
+      [9.9390, 78.1310],
+      [9.9380, 78.1320],
+    ],
+  },
+
+  Kumar: {
+    profession: "Home Service Professional",
+    experience: "5+ Years",
+    address: "Mattuthavani, Madurai",
+    eta: "22 min",
+    etaText: "22 minutes",
+
+    userLocation: [9.9390, 78.1460],
+    workerLocation: [9.9500, 78.1400],
+
+    route: [
+      [9.9500, 78.1400],
+      [9.9470, 78.1420],
+      [9.9440, 78.1440],
+      [9.9410, 78.1450],
+      [9.9390, 78.1460],
+    ],
+  },
+};
+
+// ======================================================
+// SERVICE ICONS
+// ======================================================
+
+const serviceIcons = {
+  "AC Service & Repair": "❄️",
+  "Electrician Service": "⚡",
+  "Plumbing Service": "🔧",
+  "Home Cleaning": "🧹",
+};
+
+// ======================================================
+// TRACK WORKER
+// ======================================================
 
 function TrackWorker() {
   const navigate = useNavigate();
+
   const { id } = useParams();
 
-  // ===============================
-  // LOCATIONS
-  // ===============================
+  // ====================================================
+  // GET BOOKINGS FROM LOCAL STORAGE
+  // ====================================================
 
-  // Your service address
-  const userLocation = [9.9252, 78.1198];
+  const bookings = JSON.parse(
+    localStorage.getItem("serviceBookings") || "[]"
+  );
 
-  // Raj's current location
-  const workerLocation = [9.9185, 78.1105];
+  // ====================================================
+  // FIND CURRENT BOOKING
+  // ====================================================
 
-  // Route from worker to your location
-  const route = [
-    workerLocation,
-    [9.9200, 78.1125],
-    [9.9220, 78.1150],
-    [9.9240, 78.1170],
+  const booking = bookings.find(
+    (item) => String(item.id) === String(id)
+  );
+
+  // ====================================================
+  // IF BOOKING NOT FOUND
+  // ====================================================
+
+  if (!booking) {
+    return (
+      <div className="track-page">
+
+        <nav className="track-navbar">
+
+          <div
+            className="track-logo"
+            onClick={() => navigate("/home")}
+          >
+            🏠 <span>SmartHome</span>
+          </div>
+
+        </nav>
+
+        <div
+          style={{
+            textAlign: "center",
+            padding: "100px 20px",
+          }}
+        >
+
+          <h1>
+            Booking Not Found
+          </h1>
+
+          <p>
+            This service booking could not be found.
+          </p>
+
+          <button
+            className="back-btn"
+            onClick={() => navigate("/mybookings")}
+          >
+            ← Back to My Bookings
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  // ====================================================
+  // GET WORKER NAME
+  // ====================================================
+
+  const workerName =
+    booking.workerName || "Service Professional";
+
+  // ====================================================
+  // GET WORKER DETAILS
+  // ====================================================
+
+  const details =
+    workerDetails[workerName] || {
+      profession: "Verified Service Professional",
+      experience: "3+ Years",
+      address:
+        booking.address || "Madurai",
+      eta: "20 min",
+      etaText: "20 minutes",
+
+      userLocation: [9.9252, 78.1198],
+      workerLocation: [9.9185, 78.1105],
+
+      route: [
+        [9.9185, 78.1105],
+        [9.9200, 78.1125],
+        [9.9220, 78.1150],
+        [9.9240, 78.1170],
+        [9.9252, 78.1198],
+      ],
+    };
+
+  // ====================================================
+  // SERVICE NAME
+  // ====================================================
+
+  const serviceName =
+    booking.serviceName || "Home Service";
+
+  // ====================================================
+  // SERVICE ICON
+  // ====================================================
+
+  const serviceIcon =
+    serviceIcons[serviceName] || "🛠️";
+
+  // ====================================================
+  // MAP DATA
+  // ====================================================
+
+  const {
+    profession,
+    experience,
+    address,
+    eta,
+    etaText,
     userLocation,
-  ];
+    workerLocation,
+    route,
+  } = details;
+
+  // ====================================================
+  // PAGE
+  // ====================================================
 
   return (
     <div className="track-page">
 
-      {/* ===============================
+      {/* ==================================================
           NAVBAR
-      =============================== */}
+      ================================================== */}
 
       <nav className="track-navbar">
 
@@ -88,15 +309,21 @@ function TrackWorker() {
 
         <div className="track-nav-links">
 
-          <span onClick={() => navigate("/home")}>
+          <span
+            onClick={() => navigate("/home")}
+          >
             🏠 Home
           </span>
 
-          <span onClick={() => navigate("/services")}>
+          <span
+            onClick={() => navigate("/services")}
+          >
             🛠️ Services
           </span>
 
-          <span onClick={() => navigate("/mybookings")}>
+          <span
+            onClick={() => navigate("/mybookings")}
+          >
             📋 My Bookings
           </span>
 
@@ -105,9 +332,9 @@ function TrackWorker() {
       </nav>
 
 
-      {/* ===============================
-          MAIN CONTAINER
-      =============================== */}
+      {/* ==================================================
+          MAIN
+      ================================================== */}
 
       <div className="track-container">
 
@@ -119,9 +346,9 @@ function TrackWorker() {
         </button>
 
 
-        {/* ===============================
+        {/* ==================================================
             HEADER
-        =============================== */}
+        ================================================== */}
 
         <div className="track-header">
 
@@ -140,8 +367,8 @@ function TrackWorker() {
             </h1>
 
             <p>
-              Track your assigned professional and check
-              the current service status.
+              Track your assigned professional and
+              check the current service status.
             </p>
 
           </div>
@@ -149,9 +376,9 @@ function TrackWorker() {
         </div>
 
 
-        {/* ===============================
+        {/* ==================================================
             STATUS CARD
-        =============================== */}
+        ================================================== */}
 
         <div className="status-card">
 
@@ -164,11 +391,11 @@ function TrackWorker() {
               </span>
 
               <h2>
-                Raj
+                {workerName}
               </h2>
 
               <p>
-                🛠️ AC Service & Repair
+                {serviceIcon} {serviceName}
               </p>
 
             </div>
@@ -180,9 +407,9 @@ function TrackWorker() {
           </div>
 
 
-          {/* ===============================
+          {/* ==================================================
               TIMELINE
-          =============================== */}
+          ================================================== */}
 
           <div className="tracking-section">
 
@@ -199,6 +426,7 @@ function TrackWorker() {
                 </div>
 
                 <div>
+
                   <h4>
                     Booking Confirmed
                   </h4>
@@ -206,6 +434,7 @@ function TrackWorker() {
                   <p>
                     Your service booking is confirmed.
                   </p>
+
                 </div>
 
               </div>
@@ -218,13 +447,16 @@ function TrackWorker() {
                 </div>
 
                 <div>
+
                   <h4>
                     Worker Assigned
                   </h4>
 
                   <p>
-                    Raj has been assigned to your service.
+                    {workerName} has been assigned
+                    to your service.
                   </p>
+
                 </div>
 
               </div>
@@ -237,14 +469,16 @@ function TrackWorker() {
                 </div>
 
                 <div>
+
                   <h4>
                     Worker On The Way
                   </h4>
 
                   <p>
-                    Your service professional is travelling
-                    to your address.
+                    {workerName} is travelling to
+                    your service address.
                   </p>
+
                 </div>
 
               </div>
@@ -257,6 +491,7 @@ function TrackWorker() {
                 </div>
 
                 <div>
+
                   <h4>
                     Service Started
                   </h4>
@@ -264,6 +499,7 @@ function TrackWorker() {
                   <p>
                     Waiting for worker arrival.
                   </p>
+
                 </div>
 
               </div>
@@ -276,6 +512,7 @@ function TrackWorker() {
                 </div>
 
                 <div>
+
                   <h4>
                     Service Completed
                   </h4>
@@ -283,6 +520,7 @@ function TrackWorker() {
                   <p>
                     Service will be marked completed.
                   </p>
+
                 </div>
 
               </div>
@@ -292,9 +530,9 @@ function TrackWorker() {
           </div>
 
 
-          {/* ===============================
+          {/* ==================================================
               LIVE MAP
-          =============================== */}
+          ================================================== */}
 
           <div className="live-tracking-card">
 
@@ -307,11 +545,12 @@ function TrackWorker() {
                 </span>
 
                 <h2>
-                  Worker is on the way
+                  {workerName} is on the way
                 </h2>
 
                 <p>
-                  Raj is travelling to your service address
+                  {workerName} is travelling to
+                  your service address
                 </p>
 
               </div>
@@ -320,7 +559,7 @@ function TrackWorker() {
               <div className="eta-box">
 
                 <strong>
-                  15 min
+                  {eta}
                 </strong>
 
                 <span>
@@ -332,7 +571,9 @@ function TrackWorker() {
             </div>
 
 
-            {/* MAP */}
+            {/* ==================================================
+                MAP
+            ================================================== */}
 
             <div className="map-container">
 
@@ -352,9 +593,7 @@ function TrackWorker() {
                 />
 
 
-                {/* ===============================
-                    USER LOCATION
-                =============================== */}
+                {/* USER LOCATION */}
 
                 <Marker
                   position={userLocation}
@@ -369,16 +608,14 @@ function TrackWorker() {
 
                     <br />
 
-                    Service Address
+                    {address}
 
                   </Popup>
 
                 </Marker>
 
 
-                {/* ===============================
-                    WORKER LOCATION
-                =============================== */}
+                {/* WORKER LOCATION */}
 
                 <Marker
                   position={workerLocation}
@@ -388,12 +625,12 @@ function TrackWorker() {
                   <Popup>
 
                     👨‍🔧 <strong>
-                      Raj
+                      {workerName}
                     </strong>
 
                     <br />
 
-                    AC Service Expert
+                    {profession}
 
                     <br />
 
@@ -404,9 +641,7 @@ function TrackWorker() {
                 </Marker>
 
 
-                {/* ===============================
-                    ROUTE
-                =============================== */}
+                {/* ROUTE */}
 
                 <Polyline
                   positions={route}
@@ -421,9 +656,9 @@ function TrackWorker() {
             </div>
 
 
-            {/* ===============================
-                MAP INFORMATION
-            =============================== */}
+            {/* ==================================================
+                TRACKING INFO
+            ================================================== */}
 
             <div className="tracking-info">
 
@@ -440,7 +675,7 @@ function TrackWorker() {
                   </small>
 
                   <strong>
-                    Raj
+                    {workerName}
                   </strong>
 
                 </div>
@@ -482,7 +717,7 @@ function TrackWorker() {
                   </small>
 
                   <strong>
-                    15 minutes
+                    {etaText}
                   </strong>
 
                 </div>
@@ -494,16 +729,15 @@ function TrackWorker() {
           </div>
 
 
-          {/* ===============================
+          {/* ==================================================
               WORKER DETAILS
-          =============================== */}
+          ================================================== */}
 
           <div className="worker-details">
 
             <h3>
               👨‍🔧 Worker Details
             </h3>
-
 
             <div className="worker-grid">
 
@@ -514,7 +748,7 @@ function TrackWorker() {
                 </span>
 
                 <strong>
-                  Raj
+                  {workerName}
                 </strong>
 
               </div>
@@ -527,7 +761,7 @@ function TrackWorker() {
                 </span>
 
                 <strong>
-                  AC Service Expert
+                  {profession}
                 </strong>
 
               </div>
@@ -553,7 +787,7 @@ function TrackWorker() {
                 </span>
 
                 <strong>
-                  5+ Years
+                  {experience}
                 </strong>
 
               </div>
@@ -563,9 +797,9 @@ function TrackWorker() {
           </div>
 
 
-          {/* ===============================
+          {/* ==================================================
               SERVICE ADDRESS
-          =============================== */}
+          ================================================== */}
 
           <div className="address-box">
 
@@ -574,22 +808,24 @@ function TrackWorker() {
             </h3>
 
             <p>
-              aunppanadi, Madurai
+              {address}
             </p>
 
           </div>
 
 
-          {/* ===============================
+          {/* ==================================================
               BUTTONS
-          =============================== */}
+          ================================================== */}
 
           <div className="track-actions">
 
             <button
               className="contact-worker"
               onClick={() =>
-                alert("Contact Worker feature coming next!")
+                alert(
+                  `Contact ${workerName}`
+                )
               }
             >
               📞 Contact Worker
@@ -616,5 +852,3 @@ function TrackWorker() {
 }
 
 export default TrackWorker;
-
-

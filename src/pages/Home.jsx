@@ -1,24 +1,104 @@
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "./Home.css";
+
+import { getBookedProperties } from "../utils/bookingStorage";
+import properties from "../Data/PropertyData";
 
 function Home() {
   const navigate = useNavigate();
 
+  const [bookedProperties, setBookedProperties] = useState([]);
+
+  // =====================================================
+  // LOAD BOOKED PROPERTY IDS
+  // =====================================================
+
+  useEffect(() => {
+    const loadBookedProperties = () => {
+      try {
+        const booked = getBookedProperties();
+
+        if (Array.isArray(booked)) {
+          setBookedProperties(booked.map(Number));
+        } else {
+          setBookedProperties([]);
+        }
+      } catch (error) {
+        console.error(
+          "Error loading booked properties:",
+          error
+        );
+
+        setBookedProperties([]);
+      }
+    };
+
+    loadBookedProperties();
+
+    window.addEventListener(
+      "storage",
+      loadBookedProperties
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        loadBookedProperties
+      );
+    };
+  }, []);
+
+  // =====================================================
+  // CHECK WHETHER PROPERTY IS BOOKED
+  // =====================================================
+
+  const isBooked = (propertyId) => {
+    return bookedProperties.includes(
+      Number(propertyId)
+    );
+  };
+
+  // =====================================================
+  // AVAILABLE PROPERTIES
+  // Kept for booking system compatibility
+  // =====================================================
+
+  const availableProperties = Array.isArray(properties)
+    ? properties.filter(
+        (property) => !isBooked(property.id)
+      )
+    : [];
+
+  // =====================================================
+  // NAVIGATION HELPER
+  // =====================================================
+
+  const goTo = (path) => {
+    navigate(path);
+  };
+
   return (
     <div className="home-page">
 
-      {/* ================= NAVBAR ================= */}
+      {/* =====================================================
+          NAVBAR
+      ===================================================== */}
 
       <nav className="home-navbar">
 
+        {/* LOGO */}
+
         <div
           className="home-logo"
-          onClick={() => navigate("/home")}
+          onClick={() => goTo("/home")}
           style={{ cursor: "pointer" }}
         >
           🏠 <span>SmartHome</span>
         </div>
+
+        {/* NAVIGATION */}
 
         <div className="home-nav-links">
 
@@ -26,7 +106,7 @@ function Home() {
             href="/home"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/home");
+              goTo("/home");
             }}
           >
             Home
@@ -36,7 +116,7 @@ function Home() {
             href="/search"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/search");
+              goTo("/search");
             }}
           >
             Buy
@@ -46,27 +126,37 @@ function Home() {
             href="/search"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/search");
+              goTo("/search");
             }}
           >
             Rent
           </a>
 
-          <a href="#">
+          <a
+            href="/search"
+            onClick={(e) => {
+              e.preventDefault();
+              goTo("/search");
+            }}
+          >
             Sell
           </a>
 
-          <a href="#">
+          <a
+            href="/home"
+            onClick={(e) => {
+              e.preventDefault();
+              goTo("/home");
+            }}
+          >
             About
           </a>
-
-          {/* ⭐ NEW SERVICES NAVIGATION */}
 
           <a
             href="/services"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/services");
+              goTo("/services");
             }}
           >
             Services
@@ -74,17 +164,22 @@ function Home() {
 
         </div>
 
+        {/* PROFILE */}
+
         <button
           className="profile-btn"
           type="button"
+          onClick={() => goTo("/home")}
+          aria-label="Profile"
         >
           👤
         </button>
 
       </nav>
 
-
-      {/* ================= HERO ================= */}
+      {/* =====================================================
+          HERO SECTION
+      ===================================================== */}
 
       <section className="hero-section">
 
@@ -105,59 +200,49 @@ function Home() {
             lifestyle, budget and dreams.
           </p>
 
-
-          {/* ================= SEARCH BOX ================= */}
+          {/* SEARCH BOX */}
 
           <div className="home-search">
 
             {/* LOCATION */}
 
             <div className="search-item">
-
               <span>📍</span>
 
               <div>
                 <small>Location</small>
                 <strong>Madurai</strong>
               </div>
-
             </div>
-
 
             {/* LOOKING FOR */}
 
             <div className="search-item">
-
               <span>🏠</span>
 
               <div>
                 <small>Looking for</small>
                 <strong>Rent</strong>
               </div>
-
             </div>
-
 
             {/* BEDROOMS */}
 
             <div className="search-item">
-
               <span>🛏️</span>
 
               <div>
                 <small>Bedrooms</small>
                 <strong>2 BHK</strong>
               </div>
-
             </div>
-
 
             {/* SEARCH BUTTON */}
 
             <button
               className="search-button"
               type="button"
-              onClick={() => navigate("/search")}
+              onClick={() => goTo("/search")}
             >
               🔍 Search
             </button>
@@ -166,8 +251,7 @@ function Home() {
 
         </div>
 
-
-        {/* ================= HERO IMAGE ================= */}
+        {/* HERO VISUAL */}
 
         <div className="hero-visual">
 
@@ -181,7 +265,6 @@ function Home() {
 
           </div>
 
-
           {/* MATCH CARD */}
 
           <div className="floating-card match-card">
@@ -194,7 +277,6 @@ function Home() {
             </div>
 
           </div>
-
 
           {/* VERIFIED CARD */}
 
@@ -213,8 +295,13 @@ function Home() {
 
       </section>
 
-
-      {/* ================= STATS ================= */}
+      {/* =====================================================
+          STATS
+          
+          NOTE:
+          No Popular Locations section.
+          Only statistics are shown here.
+      ===================================================== */}
 
       <section className="home-stats">
 
@@ -225,7 +312,7 @@ function Home() {
 
         <div>
           <strong>120+</strong>
-          <span>Popular Locations</span>
+          <span>Locations</span>
         </div>
 
         <div>
@@ -240,313 +327,9 @@ function Home() {
 
       </section>
 
-
-      {/* ================= POPULAR LOCATIONS ================= */}
-
-      <section className="locations-section">
-
-        <div className="section-heading">
-
-          <div>
-
-            <span>EXPLORE</span>
-
-            <h2>
-              Popular Locations 📍
-            </h2>
-
-          </div>
-
-          <a
-            href="/search"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/search");
-            }}
-          >
-            View all →
-          </a>
-
-        </div>
-
-
-        <div className="location-grid">
-
-          <div
-            className="location-card chennai"
-            onClick={() => navigate("/search")}
-            style={{ cursor: "pointer" }}
-          >
-            <div>
-              <small>Explore</small>
-              <h3>Chennai</h3>
-              <p>850+ Properties</p>
-            </div>
-          </div>
-
-
-          <div
-            className="location-card bangalore"
-            onClick={() => navigate("/search")}
-            style={{ cursor: "pointer" }}
-          >
-            <div>
-              <small>Explore</small>
-              <h3>Bangalore</h3>
-              <p>720+ Properties</p>
-            </div>
-          </div>
-
-
-          <div
-            className="location-card coimbatore"
-            onClick={() => navigate("/search")}
-            style={{ cursor: "pointer" }}
-          >
-            <div>
-              <small>Explore</small>
-              <h3>Coimbatore</h3>
-              <p>430+ Properties</p>
-            </div>
-          </div>
-
-
-          <div
-            className="location-card madurai"
-            onClick={() => navigate("/search")}
-            style={{ cursor: "pointer" }}
-          >
-            <div>
-              <small>Explore</small>
-              <h3>Madurai</h3>
-              <p>310+ Properties</p>
-            </div>
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* ================= FEATURED HOMES ================= */}
-
-      <section className="featured-section">
-
-        <div className="section-heading">
-
-          <div>
-
-            <span>
-              HANDPICKED FOR YOU
-            </span>
-
-            <h2>
-              Featured Homes 🏠
-            </h2>
-
-          </div>
-
-          <a
-            href="/search"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/search");
-            }}
-          >
-            View all →
-          </a>
-
-        </div>
-
-
-        <div className="property-grid">
-
-          {/* PROPERTY 1 */}
-
-          <div className="property-card">
-
-            <div className="property-image purple-house">
-
-              🏡
-
-              <span className="verified">
-                ✓ Verified
-              </span>
-
-              <button type="button">
-                ♡
-              </button>
-
-            </div>
-
-
-            <div className="property-info">
-
-              <span className="property-type">
-                FOR RENT
-              </span>
-
-              <h3>
-                Modern 2BHK Apartment
-              </h3>
-
-              <p>
-                📍 Anna Nagar, Chennai
-              </p>
-
-              <div className="property-details">
-
-                <span>🛏 2 Beds</span>
-                <span>🚿 2 Bath</span>
-                <span>🚗 Parking</span>
-
-              </div>
-
-
-              <div className="property-bottom">
-
-                <strong>
-                  ₹18,000
-                  <small> / month</small>
-                </strong>
-
-                <span>
-                  ✨ 94%
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          {/* PROPERTY 2 */}
-
-          <div className="property-card">
-
-            <div className="property-image blue-house">
-
-              🏠
-
-              <span className="verified">
-                ✓ Verified
-              </span>
-
-              <button type="button">
-                ♡
-              </button>
-
-            </div>
-
-
-            <div className="property-info">
-
-              <span className="property-type">
-                FOR SALE
-              </span>
-
-              <h3>
-                Luxury Family Villa
-              </h3>
-
-              <p>
-                📍 Whitefield, Bangalore
-              </p>
-
-              <div className="property-details">
-
-                <span>🛏 3 Beds</span>
-                <span>🚿 3 Bath</span>
-                <span>🚗 Parking</span>
-
-              </div>
-
-
-              <div className="property-bottom">
-
-                <strong>
-                  ₹85 Lakhs
-                </strong>
-
-                <span>
-                  ✨ 91%
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          {/* PROPERTY 3 */}
-
-          <div className="property-card">
-
-            <div className="property-image pink-house">
-
-              🏘️
-
-              <span className="verified">
-                ✓ Verified
-              </span>
-
-              <button type="button">
-                ♡
-              </button>
-
-            </div>
-
-
-            <div className="property-info">
-
-              <span className="property-type">
-                FOR RENT
-              </span>
-
-              <h3>
-                Cozy 1BHK Home
-              </h3>
-
-              <p>
-                📍 RS Puram, Coimbatore
-              </p>
-
-              <div className="property-details">
-
-                <span>🛏 1 Bed</span>
-                <span>🚿 1 Bath</span>
-                <span>📶 WiFi</span>
-
-              </div>
-
-
-              <div className="property-bottom">
-
-                <strong>
-                  ₹11,000
-                  <small> / month</small>
-                </strong>
-
-                <span>
-                  ✨ 89%
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* ===================================================== */}
-      {/* ================= HOME SERVICES ===================== */}
-      {/* ===================================================== */}
+      {/* =====================================================
+          SMART HOME SERVICES
+      ===================================================== */}
 
       <section className="home-services">
 
@@ -567,20 +350,15 @@ function Home() {
 
         </div>
 
-
-        {/* SERVICE CARDS */}
-
         <div className="service-shortcuts">
-
 
           {/* AC */}
 
           <button
             type="button"
-            onClick={() => navigate("/services")}
+            onClick={() => goTo("/services")}
             className="service-shortcut-card"
           >
-
             <div className="service-shortcut-icon">
               ❄️
             </div>
@@ -595,21 +373,16 @@ function Home() {
               </small>
             </div>
 
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </button>
-
 
           {/* ELECTRICIAN */}
 
           <button
             type="button"
-            onClick={() => navigate("/services")}
+            onClick={() => goTo("/services")}
             className="service-shortcut-card"
           >
-
             <div className="service-shortcut-icon">
               ⚡
             </div>
@@ -624,21 +397,16 @@ function Home() {
               </small>
             </div>
 
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </button>
-
 
           {/* CLEANING */}
 
           <button
             type="button"
-            onClick={() => navigate("/services")}
+            onClick={() => goTo("/services")}
             className="service-shortcut-card"
           >
-
             <div className="service-shortcut-icon">
               🧹
             </div>
@@ -653,21 +421,16 @@ function Home() {
               </small>
             </div>
 
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </button>
-
 
           {/* PLUMBER */}
 
           <button
             type="button"
-            onClick={() => navigate("/services")}
+            onClick={() => goTo("/services")}
             className="service-shortcut-card"
           >
-
             <div className="service-shortcut-icon">
               🚰
             </div>
@@ -682,21 +445,16 @@ function Home() {
               </small>
             </div>
 
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </button>
-
 
           {/* PAINTER */}
 
           <button
             type="button"
-            onClick={() => navigate("/services")}
+            onClick={() => goTo("/services")}
             className="service-shortcut-card"
           >
-
             <div className="service-shortcut-icon">
               🎨
             </div>
@@ -711,21 +469,16 @@ function Home() {
               </small>
             </div>
 
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </button>
-
 
           {/* CARPENTER */}
 
           <button
             type="button"
-            onClick={() => navigate("/services")}
+            onClick={() => goTo("/services")}
             className="service-shortcut-card"
           >
-
             <div className="service-shortcut-icon">
               🪚
             </div>
@@ -740,29 +493,24 @@ function Home() {
               </small>
             </div>
 
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </button>
 
         </div>
 
-
-        {/* SERVICE BUTTON */}
-
         <button
           type="button"
           className="all-services-btn"
-          onClick={() => navigate("/services")}
+          onClick={() => goTo("/services")}
         >
           Explore All Home Services →
         </button>
 
       </section>
 
-
-      {/* ================= SMART MATCH ================= */}
+      {/* =====================================================
+          SMART MATCH
+      ===================================================== */}
 
       <section className="smart-section">
 
@@ -785,13 +533,12 @@ function Home() {
 
           <button
             type="button"
-            onClick={() => navigate("/search")}
+            onClick={() => goTo("/search")}
           >
             Find My Perfect Match →
           </button>
 
         </div>
-
 
         <div className="smart-score">
 
@@ -806,7 +553,6 @@ function Home() {
             </span>
 
           </div>
-
 
           <div className="score-items">
 
@@ -836,8 +582,9 @@ function Home() {
 
       </section>
 
-
-      {/* ================= WHY SMARTHOME ================= */}
+      {/* =====================================================
+          WHY SMARTHOME
+      ===================================================== */}
 
       <section className="home-services home-why">
 
@@ -858,10 +605,12 @@ function Home() {
 
         </div>
 
-
         <div className="service-shortcuts">
 
+          {/* FIND HOME */}
+
           <div className="service-shortcut-card">
+
             <div className="service-shortcut-icon">
               🏠
             </div>
@@ -875,10 +624,13 @@ function Home() {
                 Buy or rent verified properties
               </small>
             </div>
+
           </div>
 
+          {/* PROFESSIONALS */}
 
           <div className="service-shortcut-card">
+
             <div className="service-shortcut-icon">
               👨‍🔧
             </div>
@@ -892,10 +644,13 @@ function Home() {
                 Verified home service workers
               </small>
             </div>
+
           </div>
 
+          {/* BOOKING */}
 
           <div className="service-shortcut-card">
+
             <div className="service-shortcut-icon">
               📅
             </div>
@@ -909,10 +664,13 @@ function Home() {
                 Choose date and time
               </small>
             </div>
+
           </div>
 
+          {/* RATINGS */}
 
           <div className="service-shortcut-card">
+
             <div className="service-shortcut-icon">
               ⭐
             </div>
@@ -926,16 +684,20 @@ function Home() {
                 Choose highly rated professionals
               </small>
             </div>
+
           </div>
 
         </div>
 
       </section>
 
-
-      {/* ================= FOOTER ================= */}
+      {/* =====================================================
+          FOOTER
+      ===================================================== */}
 
       <footer className="home-footer">
+
+        {/* BRAND */}
 
         <div>
 
@@ -949,6 +711,7 @@ function Home() {
 
         </div>
 
+        {/* EXPLORE */}
 
         <div>
 
@@ -960,7 +723,7 @@ function Home() {
             href="/search"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/search");
+              goTo("/search");
             }}
           >
             Buy
@@ -970,13 +733,19 @@ function Home() {
             href="/search"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/search");
+              goTo("/search");
             }}
           >
             Rent
           </a>
 
-          <a href="#">
+          <a
+            href="/search"
+            onClick={(e) => {
+              e.preventDefault();
+              goTo("/search");
+            }}
+          >
             Sell
           </a>
 
@@ -984,7 +753,7 @@ function Home() {
             href="/services"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/services");
+              goTo("/services");
             }}
           >
             Home Services
@@ -992,6 +761,7 @@ function Home() {
 
         </div>
 
+        {/* COMPANY */}
 
         <div>
 
@@ -999,15 +769,33 @@ function Home() {
             Company
           </h4>
 
-          <a href="#">
+          <a
+            href="/home"
+            onClick={(e) => {
+              e.preventDefault();
+              goTo("/home");
+            }}
+          >
             About
           </a>
 
-          <a href="#">
+          <a
+            href="/search"
+            onClick={(e) => {
+              e.preventDefault();
+              goTo("/search");
+            }}
+          >
             Contact
           </a>
 
-          <a href="#">
+          <a
+            href="/home"
+            onClick={(e) => {
+              e.preventDefault();
+              goTo("/home");
+            }}
+          >
             Help
           </a>
 

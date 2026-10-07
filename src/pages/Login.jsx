@@ -9,25 +9,51 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // =========================
+  // LOGIN
+  // =========================
+
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Demo role login
-    // Later this will come from backend/database
+    // Get registered account
+    const savedUser = localStorage.getItem("smartHomeUser");
 
-    if (email === "server@gmail.com") {
-      navigate("/server-dashboard");
-    } else if (email === "owner@gmail.com") {
-      navigate("/owner-dashboard");
-    } else {
+    // No account created
+    if (!savedUser) {
+      alert("Please create an account first! 🏠");
+      return;
+    }
+
+    const user = JSON.parse(savedUser);
+
+    // Check email and password
+    if (
+      email === user.email &&
+      password === user.password
+    ) {
+      // Save logged-in user
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(user)
+      );
+
+      alert("Login successful! 🎉");
+
+      // Go to Home
       navigate("/home");
+    } else {
+      alert("Invalid email or password! ❌");
     }
   };
 
   return (
     <div className="login-page">
 
-      {/* LEFT SIDE */}
+      {/* =========================
+          LEFT SIDE
+      ========================= */}
+
       <div className="login-left">
 
         <div className="brand">
@@ -47,8 +73,8 @@ function Login() {
           </h1>
 
           <p className="description">
-            Discover beautiful homes that match your lifestyle,
-            budget and dreams.
+            Discover beautiful homes that match your
+            lifestyle, budget and dreams.
           </p>
 
           <div className="stats">
@@ -79,7 +105,10 @@ function Login() {
       </div>
 
 
-      {/* RIGHT SIDE */}
+      {/* =========================
+          RIGHT SIDE
+      ========================= */}
+
       <div className="login-right">
 
         <div className="login-card">
@@ -97,7 +126,9 @@ function Login() {
           </p>
 
 
-          {/* LOGIN FORM */}
+          {/* =========================
+              LOGIN FORM
+          ========================= */}
 
           <form onSubmit={handleLogin}>
 
@@ -115,7 +146,9 @@ function Login() {
                 type="email"
                 placeholder="Enter your email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
                 required
               />
 
@@ -133,10 +166,16 @@ function Login() {
               <span>🔒</span>
 
               <input
-                type={showPassword ? "text" : "password"}
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
                 required
               />
 
@@ -159,7 +198,9 @@ function Login() {
 
               <label className="remember">
 
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                />
 
                 Remember me
 
@@ -172,7 +213,7 @@ function Login() {
             </div>
 
 
-            {/* LOGIN */}
+            {/* LOGIN BUTTON */}
 
             <button
               className="login-button"
@@ -184,16 +225,22 @@ function Login() {
           </form>
 
 
-          {/* DIVIDER */}
+          {/* =========================
+              DIVIDER
+          ========================= */}
 
           <div className="divider">
+
             <span>
               or continue with
             </span>
+
           </div>
 
 
-          {/* SOCIAL LOGIN */}
+          {/* =========================
+              SOCIAL LOGIN
+          ========================= */}
 
           <div className="social-login">
 
@@ -212,7 +259,9 @@ function Login() {
           </div>
 
 
-          {/* REGISTER */}
+          {/* =========================
+              CREATE ACCOUNT
+          ========================= */}
 
           <p className="signup-text">
 

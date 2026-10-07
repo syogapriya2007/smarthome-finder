@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import properties from "../Data/PropertyData";
 import "./Property.css";
@@ -6,14 +6,113 @@ import "./Property.css";
 const Property = () => {
   const { id } = useParams();
 
-  // Find selected property
+  // --------------------------------------------------
+  // FIND PROPERTY
+  // --------------------------------------------------
   const property = properties.find(
     (item) => String(item.id) === String(id)
   );
 
-  // ---------------------------------------
+  // --------------------------------------------------
+  // FAVORITE STATE
+  // --------------------------------------------------
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  // --------------------------------------------------
+  // HOUSE IMAGES
+  // --------------------------------------------------
+  const houseImages = [
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600607688960-e095ff83135c?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600566753051-f0b89df2dd90?auto=format&fit=crop&w=1200&q=90",
+    "https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?auto=format&fit=crop&w=1200&q=90",
+  ];
+
+  // --------------------------------------------------
+  // CHECK FAVORITE
+  // --------------------------------------------------
+  useEffect(() => {
+    if (!property) return;
+
+    try {
+      const savedFavorites =
+        JSON.parse(localStorage.getItem("smarthomeFavorites")) || [];
+
+      const alreadyFavorite = savedFavorites.some(
+        (item) => String(item.id) === String(property.id)
+      );
+
+      setIsFavorite(alreadyFavorite);
+    } catch (error) {
+      console.log("Favorites loading error:", error);
+    }
+  }, [property]);
+
+  // --------------------------------------------------
+  // TOGGLE FAVORITE
+  // --------------------------------------------------
+  const toggleFavorite = () => {
+    if (!property) return;
+
+    try {
+      const savedFavorites =
+        JSON.parse(localStorage.getItem("smarthomeFavorites")) || [];
+
+      if (isFavorite) {
+        const updatedFavorites = savedFavorites.filter(
+          (item) => String(item.id) !== String(property.id)
+        );
+
+        localStorage.setItem(
+          "smarthomeFavorites",
+          JSON.stringify(updatedFavorites)
+        );
+
+        setIsFavorite(false);
+      } else {
+        const propertyId = Number(property.id) || 1;
+
+        const imageIndex =
+          (propertyId - 1) % houseImages.length;
+
+        const favoriteProperty = {
+          ...property,
+          image: houseImages[imageIndex],
+        };
+
+        const updatedFavorites = [
+          ...savedFavorites.filter(
+            (item) => String(item.id) !== String(property.id)
+          ),
+          favoriteProperty,
+        ];
+
+        localStorage.setItem(
+          "smarthomeFavorites",
+          JSON.stringify(updatedFavorites)
+        );
+
+        setIsFavorite(true);
+      }
+    } catch (error) {
+      console.log("Favorite error:", error);
+    }
+  };
+
+  // --------------------------------------------------
   // PROPERTY NOT FOUND
-  // ---------------------------------------
+  // --------------------------------------------------
   if (!property) {
     return (
       <div className="property-not-found">
@@ -22,9 +121,7 @@ const Property = () => {
 
           <h2>Property Not Found</h2>
 
-          <p>
-            Sorry, this property is no longer available.
-          </p>
+          <p>Sorry, this property is no longer available.</p>
 
           <Link to="/search" className="back-btn">
             ← Back to Properties
@@ -34,67 +131,26 @@ const Property = () => {
     );
   }
 
-  // ---------------------------------------
-  // IMAGE HELPER
-  // ---------------------------------------
-  const getImagePath = (image, index = 0) => {
-    // If no image given, use house images
-    if (!image) {
-      return `/images/house${(index % 12) + 1}.jpg`;
-    }
+  // --------------------------------------------------
+  // IMAGE SELECTION
+  // --------------------------------------------------
+  const propertyId = Number(property.id) || 1;
 
-    // External image
-    if (
-      image.startsWith("http://") ||
-      image.startsWith("https://") ||
-      image.startsWith("data:")
-    ) {
-      return image;
-    }
+  const imageIndex =
+    (propertyId - 1) % houseImages.length;
 
-    // Already correct public path
-    if (image.startsWith("/images/")) {
-      return image;
-    }
+  const mainImage = houseImages[imageIndex];
 
-    // images/house1.jpg
-    if (image.startsWith("images/")) {
-      return `/${image}`;
-    }
+  const images = [
+    mainImage,
+    houseImages[(imageIndex + 1) % houseImages.length],
+    houseImages[(imageIndex + 2) % houseImages.length],
+    houseImages[(imageIndex + 3) % houseImages.length],
+  ];
 
-    // house1.jpg
-    return `/images/${image}`;
-  };
-
-  // ---------------------------------------
-  // PROPERTY IMAGES
-  // ---------------------------------------
-  let images = [];
-
-  if (Array.isArray(property.images) && property.images.length > 0) {
-    images = property.images.map((image, index) =>
-      getImagePath(image, index)
-    );
-  } else if (property.image) {
-    images = [getImagePath(property.image, 0)];
-  } else {
-    // Automatic fallback images
-    images = [
-      `/images/house${(Number(property.id) - 1) % 12 + 1}.jpg`,
-      `/images/house${(Number(property.id)) % 12 + 1}.jpg`,
-      `/images/house${(Number(property.id) + 1) % 12 + 1}.jpg`,
-      `/images/house${(Number(property.id) + 2) % 12 + 1}.jpg`,
-    ];
-  }
-
-  // Make sure we always have at least one image
-  if (images.length === 0) {
-    images = ["/images/house1.jpg"];
-  }
-
-  // ---------------------------------------
-  // PRICE HELPER
-  // ---------------------------------------
+  // --------------------------------------------------
+  // PRICE
+  // --------------------------------------------------
   const getPrice = () => {
     const rawPrice =
       property.price ??
@@ -102,7 +158,6 @@ const Property = () => {
       property.amount ??
       property.propertyPrice;
 
-    // If price doesn't exist
     if (
       rawPrice === undefined ||
       rawPrice === null ||
@@ -115,32 +170,29 @@ const Property = () => {
 
     const value = Number(rawPrice);
 
-    // Rent
     if (property.type?.toLowerCase() === "rent") {
       return `₹${value.toLocaleString("en-IN")}`;
     }
 
-    // Crore
     if (value >= 10000000) {
       return `₹${(value / 10000000).toFixed(2)} Cr`;
     }
 
-    // Lakh
     if (value >= 100000) {
       return `₹${(value / 100000).toFixed(2)} L`;
     }
 
-    // Normal price
     return `₹${value.toLocaleString("en-IN")}`;
   };
 
   const price = getPrice();
 
-  // ---------------------------------------
+  // --------------------------------------------------
   // NEARBY
-  // ---------------------------------------
+  // --------------------------------------------------
   const nearby =
-    Array.isArray(property.nearby) && property.nearby.length > 0
+    Array.isArray(property.nearby) &&
+    property.nearby.length > 0
       ? property.nearby
       : [
           {
@@ -165,9 +217,9 @@ const Property = () => {
           },
         ];
 
-  // ---------------------------------------
+  // --------------------------------------------------
   // AMENITIES
-  // ---------------------------------------
+  // --------------------------------------------------
   const amenities =
     Array.isArray(property.amenities) &&
     property.amenities.length > 0
@@ -181,62 +233,78 @@ const Property = () => {
           "Good Ventilation",
         ];
 
-  // ---------------------------------------
+  // --------------------------------------------------
   // PROPERTY TYPE
-  // ---------------------------------------
+  // --------------------------------------------------
   const propertyType =
     property.type?.toLowerCase() === "sale"
       ? "FOR SALE"
       : "FOR RENT";
 
-  // ---------------------------------------
-  // SAFE MATCH %
-  // ---------------------------------------
+  // --------------------------------------------------
+  // SMART MATCH
+  // --------------------------------------------------
   const match = property.match || 95;
 
-  // ---------------------------------------
-  // SAFE BEDROOMS / BATHROOMS
-  // ---------------------------------------
+  // --------------------------------------------------
+  // FEATURES
+  // --------------------------------------------------
   const bedrooms = property.bedrooms || 2;
   const bathrooms = property.bathrooms || 2;
 
-  // ---------------------------------------
-  // SAFE AREA
-  // ---------------------------------------
   const area =
     property.area ||
     property.sqft ||
     property.squareFeet ||
     "—";
 
-  // ---------------------------------------
+  // --------------------------------------------------
   // DESCRIPTION
-  // ---------------------------------------
+  // --------------------------------------------------
   const description =
     property.description ||
     `A beautiful ${bedrooms}BHK family property located in ${
-      property.location
+      property.location || "Madurai"
     }. This home offers comfortable living space with easy access to nearby schools, hospitals, supermarkets, transportation and other essential facilities.`;
 
+  // --------------------------------------------------
+  // IMAGE ERROR
+  // --------------------------------------------------
+  const handleImageError = (event) => {
+    event.currentTarget.src = houseImages[0];
+  };
+
+  // --------------------------------------------------
+  // RETURN
+  // --------------------------------------------------
   return (
     <div className="property-page">
 
-      {/* =====================================
-          NAVBAR
-      ====================================== */}
+      {/* ================= NAVBAR ================= */}
+
       <header className="property-navbar">
 
         <Link to="/home" className="brand">
-          <span className="brand-icon">🏠</span>
+
+          <span className="brand-icon">
+            🏠
+          </span>
 
           <span>
             <strong>SmartHome</strong>
-            <small>Find your perfect home</small>
+
+            <small>
+              Find your perfect home
+            </small>
           </span>
+
         </Link>
 
         <nav>
-          <Link to="/home">Home</Link>
+
+          <Link to="/home">
+            Home
+          </Link>
 
           <Link to="/search">
             Properties
@@ -245,43 +313,52 @@ const Property = () => {
           <Link to="/search">
             Rent / Buy
           </Link>
+
+          <Link
+            to="/favorites"
+            className="favorites-nav-link"
+          >
+            ❤️ Favorites
+          </Link>
+
         </nav>
 
       </header>
 
-      {/* =====================================
-          MAIN CONTAINER
-      ====================================== */}
+
+      {/* ================= MAIN ================= */}
+
       <main className="property-container">
 
         {/* BACK */}
-        <Link to="/search" className="back-link">
+
+        <Link
+          to="/search"
+          className="back-link"
+        >
           ← Back to properties
         </Link>
 
-        {/* =====================================
-            HERO
-        ====================================== */}
+
+        {/* ================= HERO ================= */}
+
         <section className="property-hero">
 
-          {/* -----------------------------------
-              IMAGE GALLERY
-          ------------------------------------ */}
+          {/* IMAGE GALLERY */}
+
           <div className="gallery">
 
-            {/* MAIN IMAGE */}
             <div className="main-photo">
 
               <img
                 src={images[0]}
-                alt={property.title || "Property"}
-                onError={(event) => {
-                  event.currentTarget.onerror = null;
-                  event.currentTarget.src = "/images/house1.jpg";
-                }}
+                alt={
+                  property.title ||
+                  "Beautiful House"
+                }
+                onError={handleImageError}
               />
 
-              {/* BADGES */}
               <div className="photo-badges">
 
                 <span className="verified-badge">
@@ -294,18 +371,36 @@ const Property = () => {
 
               </div>
 
-              {/* PHOTO COUNT */}
               <div className="photo-count">
                 📷 {images.length} Photos
               </div>
 
+              {/* PHOTO FAVORITE */}
+
+              <button
+                type="button"
+                className={`favorite-photo-btn ${
+                  isFavorite
+                    ? "favorite-active"
+                    : ""
+                }`}
+                onClick={toggleFavorite}
+              >
+                {isFavorite
+                  ? "❤️"
+                  : "🤍"}
+              </button>
+
             </div>
 
-            {/* SMALL IMAGES */}
-            {images.length > 1 && (
-              <div className="small-photos">
 
-                {images.slice(1, 4).map((image, index) => (
+            {/* SMALL PHOTOS */}
+
+            <div className="small-photos">
+
+              {images
+                .slice(1, 4)
+                .map((image, index) => (
 
                   <div
                     className="small-photo"
@@ -314,83 +409,100 @@ const Property = () => {
 
                     <img
                       src={image}
-                      alt={`${property.title || "Property"} ${
+                      alt={`Property ${
                         index + 2
                       }`}
-                      onError={(event) => {
-                        event.currentTarget.onerror = null;
-                        event.currentTarget.src = `/images/house${
-                          ((index + 1) % 12) + 1
-                        }.jpg`;
-                      }}
+                      onError={handleImageError}
                     />
-
-                    {/* MORE PHOTOS */}
-                    {index === 2 &&
-                      images.length > 4 && (
-                        <div className="more-photos">
-                          +{images.length - 4} more
-                        </div>
-                      )}
 
                   </div>
 
                 ))}
 
-              </div>
-            )}
+            </div>
 
           </div>
 
-          {/* =====================================
-              HERO INFORMATION
-          ====================================== */}
+
+          {/* ================= HERO INFO ================= */}
+
           <div className="hero-info">
 
-            {/* SMART MATCH */}
+            <button
+              type="button"
+              className={`favorite-btn ${
+                isFavorite
+                  ? "favorite-active"
+                  : ""
+              }`}
+              onClick={toggleFavorite}
+            >
+              {isFavorite
+                ? "❤️ Saved"
+                : "🤍 Save Property"}
+            </button>
+
+
             <div className="match-pill">
               ⭐ {match}% Smart Match
             </div>
 
-            {/* TITLE */}
+
             <h1>
-              {property.title || "Beautiful Family Home"}
+              {property.title ||
+                "Beautiful Family Home"}
             </h1>
 
-            {/* LOCATION */}
+
             <p className="location">
-              📍 {property.location || "Madurai"}
+              📍{" "}
+              {property.location ||
+                "Madurai"}
             </p>
 
-            {/* MATCH CARD */}
+
             <div className="match-card">
 
               <div className="match-circle">
-                <strong>{match}%</strong>
+                <strong>
+                  {match}%
+                </strong>
               </div>
 
               <div>
-                <b>Smart Match</b>
+
+                <b>
+                  Smart Match
+                </b>
 
                 <span>
                   Perfect for your preferences
                 </span>
+
               </div>
 
             </div>
 
+
             {/* PRICE */}
+
             <div className="price-box">
 
-              <span>PROPERTY PRICE</span>
+              <span>
+                PROPERTY PRICE
+              </span>
 
               <strong>
                 {price}
               </strong>
 
-              {property.type?.toLowerCase() === "rent" &&
-                price !== "Price on request" && (
-                  <small>/ month</small>
+              {property.type?.toLowerCase() ===
+                "rent" &&
+                price !==
+                  "Price on request" && (
+                  <small>
+                    / month
+                  </small>
                 )}
 
             </div>
@@ -399,13 +511,13 @@ const Property = () => {
 
         </section>
 
-        {/* =====================================
-            FEATURES
-        ====================================== */}
+
+        {/* ================= FEATURES ================= */}
+
         <section className="features-grid">
 
-          {/* BEDROOMS */}
           <div className="feature-card">
+
             <span>🛏️</span>
 
             <strong>
@@ -415,10 +527,12 @@ const Property = () => {
             <small>
               Bedrooms
             </small>
+
           </div>
 
-          {/* BATHROOMS */}
+
           <div className="feature-card">
+
             <span>🛁</span>
 
             <strong>
@@ -428,10 +542,12 @@ const Property = () => {
             <small>
               Bathrooms
             </small>
+
           </div>
 
-          {/* AREA */}
+
           <div className="feature-card">
+
             <span>📐</span>
 
             <strong>
@@ -441,36 +557,39 @@ const Property = () => {
             <small>
               Sq.ft
             </small>
+
           </div>
 
-          {/* PARKING */}
+
           <div className="feature-card">
+
             <span>🚗</span>
 
             <strong>
-              {property.parking
-                ? "Yes"
-                : "Yes"}
+              Yes
             </strong>
 
             <small>
               Parking
             </small>
+
           </div>
 
         </section>
 
-        {/* =====================================
-            MAIN CONTENT
-        ====================================== */}
+
+        {/* ================= CONTENT ================= */}
+
         <div className="property-layout">
 
-          {/* ===================================
-              LEFT SIDE
-          ==================================== */}
+
+          {/* ================= LEFT ================= */}
+
           <div className="property-main">
 
+
             {/* ABOUT */}
+
             <section className="info-section">
 
               <div className="section-title">
@@ -478,6 +597,7 @@ const Property = () => {
                 <span>🏠</span>
 
                 <div>
+
                   <h2>
                     About this property
                   </h2>
@@ -485,6 +605,7 @@ const Property = () => {
                   <p>
                     Everything you need to know
                   </p>
+
                 </div>
 
               </div>
@@ -495,9 +616,9 @@ const Property = () => {
 
             </section>
 
-            {/* =================================
-                AMENITIES
-            ================================== */}
+
+            {/* AMENITIES */}
+
             <section className="info-section">
 
               <div className="section-title">
@@ -505,6 +626,7 @@ const Property = () => {
                 <span>✨</span>
 
                 <div>
+
                   <h2>
                     Amenities
                   </h2>
@@ -512,9 +634,11 @@ const Property = () => {
                   <p>
                     Comfort and convenience included
                   </p>
+
                 </div>
 
               </div>
+
 
               <div className="amenities-grid">
 
@@ -533,6 +657,7 @@ const Property = () => {
                     ];
 
                     return (
+
                       <div
                         className="amenity-item"
                         key={`${amenity}-${index}`}
@@ -552,6 +677,7 @@ const Property = () => {
                         </b>
 
                       </div>
+
                     );
                   }
                 )}
@@ -560,9 +686,9 @@ const Property = () => {
 
             </section>
 
-            {/* =================================
-                NEARBY
-            ================================== */}
+
+            {/* NEARBY */}
+
             <section className="info-section">
 
               <div className="section-title">
@@ -570,6 +696,7 @@ const Property = () => {
                 <span>📍</span>
 
                 <div>
+
                   <h2>
                     What's nearby?
                   </h2>
@@ -577,9 +704,11 @@ const Property = () => {
                   <p>
                     Essential places around the property
                   </p>
+
                 </div>
 
               </div>
+
 
               <div className="nearby-grid">
 
@@ -592,7 +721,10 @@ const Property = () => {
                     >
 
                       <div className="nearby-icon">
-                        {place.icon || "📍"}
+
+                        {place.icon ||
+                          "📍"}
+
                       </div>
 
                       <div>
@@ -616,9 +748,9 @@ const Property = () => {
 
             </section>
 
-            {/* =================================
-                VERIFICATION
-            ================================== */}
+
+            {/* VERIFICATION */}
+
             <section className="verification-card">
 
               <div className="verification-icon">
@@ -656,9 +788,9 @@ const Property = () => {
 
             </section>
 
-            {/* =================================
-                MAP
-            ================================== */}
+
+            {/* ================= MAP ================= */}
+
             <section className="map-section">
 
               <div className="section-title">
@@ -672,19 +804,22 @@ const Property = () => {
                   </h2>
 
                   <p>
-                    {property.location || "Madurai"}
+                    {property.location ||
+                      "Madurai"}
                   </p>
 
                 </div>
 
               </div>
 
+
               <div className="map-wrapper">
 
                 <iframe
                   title="Property Location"
                   src={`https://www.google.com/maps?q=${encodeURIComponent(
-                    property.location || "Madurai"
+                    property.location ||
+                      "Madurai"
                   )}&output=embed`}
                   loading="lazy"
                   allowFullScreen
@@ -692,10 +827,12 @@ const Property = () => {
 
               </div>
 
+
               <a
                 className="google-map-btn"
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                  property.location || "Madurai"
+                  property.location ||
+                    "Madurai"
                 )}`}
                 target="_blank"
                 rel="noreferrer"
@@ -707,14 +844,16 @@ const Property = () => {
 
           </div>
 
-          {/* ===================================
-              RIGHT SIDEBAR
-          ==================================== */}
+
+          {/* ================= RIGHT SIDEBAR ================= */}
+
           <aside className="action-sidebar">
 
             <div className="booking-card">
 
-              {/* TOP */}
+
+              {/* CARD TOP */}
+
               <div className="card-top">
 
                 <span>🏠</span>
@@ -733,7 +872,9 @@ const Property = () => {
 
               </div>
 
+
               {/* PRICE */}
+
               <div className="side-price">
 
                 <small>
@@ -749,7 +890,8 @@ const Property = () => {
 
                 {property.type?.toLowerCase() ===
                   "rent" &&
-                  price !== "Price on request" && (
+                  price !==
+                    "Price on request" && (
                     <span>
                       /month
                     </span>
@@ -757,86 +899,136 @@ const Property = () => {
 
               </div>
 
-              {/* CONTACT OWNER */}
-              <Link
-                to={`/contact/${property.id}`}
-                className="action-btn contact-btn"
-              >
 
-                <span>📞</span>
+              {/* ================= COMPACT ACTIONS ================= */}
 
-                <div>
+              <div className="main-action-buttons">
 
-                  <b>
-                    Contact Owner
-                  </b>
 
-                  <small>
-                    Get owner details & enquire
-                  </small>
+                {/* FAVORITE */}
 
-                </div>
+                <button
+                  type="button"
+                  className={`sidebar-favorite-btn ${
+                    isFavorite
+                      ? "favorite-active"
+                      : ""
+                  }`}
+                  onClick={toggleFavorite}
+                >
 
-                <span>→</span>
+                  <span>
+                    {isFavorite
+                      ? "❤️"
+                      : "🤍"}
+                  </span>
 
-              </Link>
+                  <span>
+                    {isFavorite
+                      ? "Saved to Favorites"
+                      : "Add to Favorites"}
+                  </span>
 
-              {/* SCHEDULE */}
-              <Link
-                to={`/schedule/${property.id}`}
-                className="action-btn visit-btn"
-              >
+                </button>
 
-                <span>📅</span>
 
-                <div>
+                {/* CONTACT OWNER */}
 
-                  <b>
-                    Schedule a Visit
-                  </b>
+                <Link
+                  to={`/contact/${property.id}`}
+                  className="action-btn contact-btn"
+                >
 
-                  <small>
-                    Choose your preferred date & time
-                  </small>
+                  <span>📞</span>
 
-                </div>
+                  <div>
 
-                <span>→</span>
+                    <b>
+                      Contact Owner
+                    </b>
 
-              </Link>
+                    <small>
+                      Get owner details & enquire
+                    </small>
 
-              {/* BOOK */}
-              <Link
-                to={`/book/${property.id}`}
-                className="action-btn book-btn"
-              >
+                  </div>
 
-                <span>🏠</span>
+                  <span>
+                    →
+                  </span>
 
-                <div>
+                </Link>
 
-                  <b>
-                    Book This Property
-                  </b>
 
-                  <small>
-                    Send your booking request
-                  </small>
+                {/* BOOK PROPERTY */}
 
-                </div>
+                <Link
+                  to={`/book/${property.id}`}
+                  className="action-btn book-btn"
+                >
 
-                <span>→</span>
+                  <span>🏠</span>
 
-              </Link>
+                  <div>
+
+                    <b>
+                      Book This Property
+                    </b>
+
+                    <small>
+                      Send your booking request
+                    </small>
+
+                  </div>
+
+                  <span>
+                    →
+                  </span>
+
+                </Link>
+
+
+                {/* SCHEDULE */}
+
+                <Link
+                  to={`/schedule/${property.id}`}
+                  className="action-btn visit-btn"
+                >
+
+                  <span>📅</span>
+
+                  <div>
+
+                    <b>
+                      Schedule a Visit
+                    </b>
+
+                    <small>
+                      Choose your preferred date & time
+                    </small>
+
+                  </div>
+
+                  <span>
+                    →
+                  </span>
+
+                </Link>
+
+              </div>
+
 
               {/* SECURITY */}
+
               <div className="secure-note">
                 🔒 Your information is safe & secure
               </div>
 
             </div>
 
+
             {/* QUICK POINTS */}
+
             <div className="quick-points">
 
               <div>
@@ -863,30 +1055,47 @@ const Property = () => {
 
       </main>
 
-      {/* =====================================
-          MOBILE ACTION BAR
-      ====================================== */}
+
+      {/* ================= MOBILE ACTION BAR ================= */}
+
       <div className="mobile-action-bar">
 
         <Link
           to={`/contact/${property.id}`}
         >
+
           <span>📞</span>
-          <span>Contact</span>
+
+          <span>
+            Contact
+          </span>
+
         </Link>
+
 
         <Link
           to={`/schedule/${property.id}`}
         >
+
           <span>📅</span>
-          <span>Visit</span>
+
+          <span>
+            Visit
+          </span>
+
         </Link>
+
 
         <Link
           to={`/book/${property.id}`}
         >
+
           <span>🏠</span>
-          <span>Book</span>
+
+          <span>
+            Book
+          </span>
+
         </Link>
 
       </div>
