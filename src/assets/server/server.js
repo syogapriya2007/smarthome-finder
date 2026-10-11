@@ -1,6 +1,8 @@
+
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+require("dotenv").config();
 
 const app = express();
 
@@ -12,6 +14,8 @@ app.get("/", (req, res) => {
 });
 
 app.post("/send-sms", async (req, res) => {
+  console.log("SEND-SMS REQUEST RECEIVED");
+
   try {
     const {
       user_name,
@@ -24,7 +28,18 @@ app.post("/send-sms", async (req, res) => {
     if (!user_name || !user_phone || !owner_phone) {
       return res.status(400).json({
         success: false,
-        message: "User name, user phone and owner phone are required",
+        message: "Name, user phone and owner phone are required.",
+      });
+    }
+
+    const apiKey = process.env.FAST2SMS_API_KEY;
+
+    if (!apiKey) {
+      console.error("FAST2SMS_API_KEY is missing in .env");
+
+      return res.status(500).json({
+        success: false,
+        message: "Fast2SMS API key is missing. Check your server .env file.",
       });
     }
 
@@ -35,10 +50,8 @@ app.post("/send-sms", async (req, res) => {
       `Phone: ${user_phone}\n` +
       `Message: ${message || "Interested in this property."}`;
 
-    console.log("New Enquiry");
-    console.log("Owner Phone:", owner_phone);
-    console.log("User Name:", user_name);
-    console.log("User Phone:", user_phone);
+    console.log("Enquiry received for property:", property_title);
+    console.log("Owner phone:", owner_phone);
 
     const response = await axios.post(
       "https://www.fast2sms.com/dev/bulkV2",
@@ -47,37 +60,47 @@ app.post("/send-sms", async (req, res) => {
         message: smsMessage,
         language: "english",
         flash: 0,
-        numbers: owner_phone,
+        numbers: String(owner_phone).replace(/\D/g, ""),
       },
       {
         headers: {
-          authorization: process.env.FAST2SMS_API_KEY,
+          authorization: apiKey,
           "Content-Type": "application/json",
         },
+        timeout: 15000,
       }
     );
 
-    console.log("SMS Response:", response.data);
+    console.log("Fast2SMS response:", response.data);
 
-    res.json({
+    // Don't report success if the provider reports failure.
+    if (response.data?.return === false) {
+      return res.status(502).json({
+        success: false,
+        message: response.data?.message || "Fast2SMS rejected the SMS request.",
+      });
+    }
+
+    return res.json({
       success: true,
-      message: "SMS sent to house owner successfully!",
+      message: "SMS request accepted by Fast2SMS.",
     });
-
   } catch (error) {
     console.error(
-      "SMS Error:",
+      "SMS ERROR:",
       error.response?.data || error.message
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      message: "SMS sending failed",
+      message:
+        error.response?.data?.message ||
+        "SMS sending failed. Check the backend terminal for details.",
     });
   }
 });
 
 app.listen(5000, () => {
-  console.log("SmartHome Finder Backend Started");
+  console.log("SmartHome Finder Backend running on port 5000");
   console.log("http://localhost:5000");
 });

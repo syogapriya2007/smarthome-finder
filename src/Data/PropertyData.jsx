@@ -67,20 +67,18 @@ const houseStyles = [
     bedrooms: 2,
     bathrooms: 2,
     area: 1200,
-    rent: [12000, 13000, 14000, 15000, 16000],
+    rent: [3000, 5000, 7500, 10000, 12000],
     sale: 0,
   },
-
   {
     title: "Spacious Independent House",
     type: "Rent",
     bedrooms: 3,
     bathrooms: 2,
     area: 1500,
-    rent: [17000, 18000, 19000, 20000, 22000],
+    rent: [4000, 6000, 9000, 14000, 22000],
     sale: 0,
   },
-
   {
     title: "Premium Family Villa",
     type: "Buy",
@@ -88,19 +86,17 @@ const houseStyles = [
     bathrooms: 3,
     area: 2200,
     rent: 0,
-    sale: 7500000,
+    sale: 0,
   },
-
   {
     title: "Comfortable 2BHK Home",
     type: "Rent",
     bedrooms: 2,
     bathrooms: 2,
     area: 1100,
-    rent: [10000, 11500, 12500, 13500, 14500],
+    rent: [3500, 8000, 11000, 16000, 25000],
     sale: 0,
   },
-
   {
     title: "Luxury 3BHK Villa",
     type: "Buy",
@@ -108,180 +104,119 @@ const houseStyles = [
     bathrooms: 3,
     area: 1900,
     rent: 0,
-    sale: 6200000,
+    sale: 0,
   },
 ];
 
-/*
-  ============================================================
-  SMART HOME PROPERTY DATA
-  ============================================================
+const salePriceBands = [
+  800000,    // ₹8L
+  1800000,   // ₹18L
+  3500000,   // ₹35L
+  6500000,   // ₹65L
+  12000000,  // ₹1.2Cr
+];
 
-  20 Madurai Areas
-  ×
-  5 Properties Per Area
-  =
-  100 Properties
+// Owner contact details
+const ownerDetails = [
+  { phone: "9994875018", email: "24suca52@tcarts.in" },
+  { phone: "9025097986", email: "24suca32@tcarts.in" },
+  { phone: "9597367373", email: "24suca33@tcarts.in" },
+  { phone: "9500343967", email: "24succa21@tcarts.in" },
+  { phone: "7639219388", email: "24suca22@tcarts.in" },
+  { phone: "9597686189", email: "24suca41@tcarts.in" },
+  { phone: "8148324144", email: "senthuram78@gmail.com" },
+  { phone: "9787634037", email: "24suca50@tcarts.in" },
+];
 
-  Booking:
-  booked: false
+// Generate exactly 150 properties
+const properties = Array.from({ length: 150 }, (_, index) => {
+  const id = index + 1;
 
-  IMPORTANT:
-  Actual booking status will be controlled using
-  localStorage in bookingStorage.js.
-*/
+  const areaIndex = Math.floor(index / 8);
+  const area = areas[areaIndex % areas.length];
 
-const properties = areas.flatMap((area, areaIndex) => {
-  return houseStyles.map((style, houseIndex) => {
-    const id = areaIndex * 5 + houseIndex + 1;
+  const houseIndex = index % houseStyles.length;
+  const style = houseStyles[houseIndex];
 
-    const isRent = style.type === "Rent";
+  const isRent = style.type === "Rent";
 
-    let price;
+  let price;
 
-    // -------------------------------
-    // RENT PRICE
-    // -------------------------------
-    if (isRent) {
-      price =
-        style.rent[
-          (areaIndex + houseIndex) % style.rent.length
-        ];
-    }
+  if (isRent) {
+    // Rent budget values: below ₹4,000 to above ₹20,000
+    const rentIndex =
+      Math.floor(index / 5) % style.rent.length;
 
-    // -------------------------------
-    // SALE PRICE
-    // -------------------------------
-    else {
-      price =
-        style.sale +
-        areaIndex * 150000 +
-        houseIndex * 250000;
-    }
+    price = style.rent[rentIndex];
+  } else {
+    // Sale budget values: below ₹10L to above ₹1Cr
+    const saleBandIndex =
+      Math.floor(index / 5) % salePriceBands.length;
 
-    // -------------------------------
-    // SMART MATCH %
-    // -------------------------------
-    const match =
-      90 +
-      ((areaIndex * 3 + houseIndex * 2) % 10);
+    price =
+      salePriceBands[saleBandIndex] +
+      areaIndex * 10000;
+  }
 
-    // -------------------------------
-    // PROPERTY IMAGE
-    // -------------------------------
-    const image =
-      houseImages[(id - 1) % houseImages.length];
+  const match =
+    90 + ((areaIndex * 3 + houseIndex * 2) % 10);
 
-    // -------------------------------
-    // PROPERTY OBJECT
-    // -------------------------------
-    return {
-      // Unique property ID
-      id,
+  const image =
+    houseImages[(id - 1) % houseImages.length];
 
-      // Property name
-      title: `${style.title} - ${areaShortNames[area]}`,
+  const owner =
+    ownerDetails[(id - 1) % ownerDetails.length];
 
-      // Location
-      location: area,
+  return {
+    id,
 
-      // Rent / Buy
-      type: style.type,
+    title: `${style.title} - ${areaShortNames[area]}`,
+    location: area,
+    type: style.type,
+    price,
+    match,
 
-      // Price
-      price,
+    bedrooms: style.bedrooms,
+    bathrooms: style.bathrooms,
+    area: style.area,
+    sqft: style.area,
 
-      // Smart match percentage
-      match,
+    image,
 
-      // Property size details
-      bedrooms: style.bedrooms,
-      bathrooms: style.bathrooms,
-      area: style.area,
-      sqft: style.area,
-
-      // Main image
+    images: [
       image,
+      houseImages[id % houseImages.length],
+      houseImages[(id + 1) % houseImages.length],
+    ],
 
-      // Property gallery
-      images: [
-        image,
-        houseImages[(id) % houseImages.length],
-        houseImages[(id + 1) % houseImages.length],
-      ],
+    verified: true,
+    booked: false,
+    status: "AVAILABLE",
 
-      // Verification
-      verified: true,
+    ownerName: `SmartHome Owner ${id}`,
+    ownerPhone: owner.phone,
+    ownerEmail: owner.email,
 
-      // ------------------------------------------------
-      // BOOKING STATUS
-      // ------------------------------------------------
-      // Default value is false.
-      // After booking, bookingStorage.js will maintain
-      // the actual booked property ID.
-      // ------------------------------------------------
-      booked: false,
+    description: `A beautiful ${style.bedrooms}BHK ${style.type.toLowerCase()} property in ${area}, Madurai. This home offers comfortable living space, good surroundings and convenient access to nearby facilities.`,
 
-      // Property availability
-      status: "AVAILABLE",
+    amenities: [
+      "Parking",
+      "24/7 Water Supply",
+      "Power Backup",
+      "Security",
+      "Modular Kitchen",
+      "Nearby Shops",
+    ],
 
-      // ------------------------------------------------
-      // OWNER DETAILS
-      // ------------------------------------------------
-      ownerName: `SmartHome Owner ${id}`,
+    facing: ["East", "West", "North", "South"][
+      (areaIndex + houseIndex) % 4
+    ],
 
-      /*
-        Demo owner phone number.
-
-        For real SMS:
-        replace this with the actual owner's
-        registered phone number.
-      */
-      ownerPhone: "9994875018",
-
-      // ------------------------------------------------
-      // DESCRIPTION
-      // ------------------------------------------------
-      description: `A beautiful ${style.bedrooms}BHK ${
-        style.type.toLowerCase()
-      } property in ${area}, Madurai. This home offers comfortable living space, good surroundings and convenient access to nearby facilities.`,
-
-      // ------------------------------------------------
-      // AMENITIES
-      // ------------------------------------------------
-      amenities: [
-        "Parking",
-        "24/7 Water Supply",
-        "Power Backup",
-        "Security",
-        "Modular Kitchen",
-        "Nearby Shops",
-      ],
-
-      // ------------------------------------------------
-      // FACING
-      // ------------------------------------------------
-      facing: [
-        "East",
-        "West",
-        "North",
-        "South",
-      ][
-        (areaIndex + houseIndex) % 4
-      ],
-
-      // ------------------------------------------------
-      // FURNISHING
-      // ------------------------------------------------
-      furnishing: [
-        "Fully Furnished",
-        "Semi Furnished",
-        "Unfurnished",
-      ][
-        (areaIndex + houseIndex) % 3
-      ],
-    };
-  });
+    furnishing: [
+      "Fully Furnished",
+      "Semi Furnished",
+      "Unfurnished",
+    ][(areaIndex + houseIndex) % 3],
+  };
 });
-
 export default properties;

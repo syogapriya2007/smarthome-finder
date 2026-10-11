@@ -1,5 +1,7 @@
+
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 import properties from "../Data/PropertyData";
 import "./Contact.css";
 
@@ -11,9 +13,6 @@ function Contact() {
     (item) => String(item.id) === String(id)
   );
 
-  console.log("SELECTED PROPERTY:", property);
-  console.log("OWNER PHONE:", property?.ownerPhone);
-
   const [formData, setFormData] = useState({
     user_name: "",
     user_phone: "",
@@ -21,8 +20,6 @@ function Contact() {
   });
 
   const [loading, setLoading] = useState(false);
-
-  // Website message
   const [statusMessage, setStatusMessage] = useState("");
   const [statusType, setStatusType] = useState("");
 
@@ -34,7 +31,6 @@ function Contact() {
       [name]: value,
     }));
 
-    // Remove old message when user edits form
     setStatusMessage("");
     setStatusType("");
   };
@@ -45,33 +41,45 @@ function Contact() {
     setStatusMessage("");
     setStatusType("");
 
+    // Validate name
     if (!formData.user_name.trim()) {
       setStatusMessage("Please enter your name.");
       setStatusType("error");
       return;
     }
 
-    if (!formData.user_phone.trim()) {
-      setStatusMessage("Please enter your phone number.");
+    // Validate phone number
+    const phone = formData.user_phone.trim();
+
+    if (!/^\d{10}$/.test(phone)) {
+      setStatusMessage(
+        "Please enter a valid 10-digit phone number."
+      );
       setStatusType("error");
       return;
     }
 
-    if (formData.user_phone.trim().length < 10) {
-      setStatusMessage("Please enter a valid phone number.");
-      setStatusType("error");
-      return;
-    }
-
+    // Validate message
     if (!formData.message.trim()) {
       setStatusMessage("Please enter your message.");
       setStatusType("error");
       return;
     }
 
-    if (!property?.ownerPhone) {
+    // Check property
+    if (!property) {
+      setStatusMessage("Property not found.");
+      setStatusType("error");
+      return;
+    }
+
+    // Check owner's email
+    if (
+      !property.ownerEmail ||
+      !String(property.ownerEmail).includes("@")
+    ) {
       setStatusMessage(
-        "Owner phone number is not available for this property."
+        "Owner email is not configured for this property."
       );
       setStatusType("error");
       return;
@@ -80,76 +88,51 @@ function Contact() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/contact",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_name: formData.user_name.trim(),
-            user_phone: formData.user_phone.trim(),
-            message: formData.message.trim(),
-            property_title: property.title,
-            owner_phone: property.ownerPhone,
-          }),
-        }
-      );
+      const templateParams = {
+        to_email: property.ownerEmail,
+        property_title: property.title || "Property Enquiry",
+        user_name: formData.user_name.trim(),
+        user_phone: phone,
+        message: formData.message.trim(),
+      };
 
-      const data = await response.json();
+      
+const response = await emailjs.send(
+  "service_oymtoih",
+  "template_q9g34oe",
+  templateParams,
+  {
+    publicKey: "7wow1YdoqHnk-gJpB",
+  }
+);
 
-      console.log("BACKEND RESPONSE:", data);
 
-      // ===============================
-      // SMS SUCCESS
-      // ===============================
-
-      if (response.ok && data.success) {
-        setStatusMessage(
-          "✅ Enquiry sent successfully! SMS has been sent to the property owner."
-        );
-
-        setStatusType("success");
-
-        setFormData({
-          user_name: "",
-          user_phone: "",
-          message: "I'm interested in this property.",
-        });
-
-        // Don't immediately navigate.
-        // User can see the success message on this page.
-      }
-
-      // ===============================
-      // SMS FAILED
-      // ===============================
-
-      else {
-        setStatusMessage(
-          data.message ||
-            "❌ Enquiry submitted, but SMS could not be sent."
-        );
-
-        setStatusType("error");
-      }
-    } catch (error) {
-      console.error("Contact Error:", error);
+      console.log("EmailJS response:", response.status, response.text);
 
       setStatusMessage(
-        "❌ Backend server connect aagala. Please make sure server is running on port 5000."
+        "Your enquiry email has been sent successfully!"
       );
+      setStatusType("success");
 
+      setFormData({
+        user_name: "",
+        user_phone: "",
+        message: "I'm interested in this property.",
+      });
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+
+      const errorText =
+        error?.text || error?.message || "Unknown error";
+
+      setStatusMessage(
+        `Unable to send email: ${errorText}`
+      );
       setStatusType("error");
     } finally {
       setLoading(false);
     }
   };
-
-  // ===============================
-  // PROPERTY NOT FOUND
-  // ===============================
 
   if (!property) {
     return (
@@ -158,6 +141,7 @@ function Contact() {
           <h2>Property not found</h2>
 
           <button
+            type="button"
             className="back-btn"
             onClick={() => navigate("/search")}
           >
@@ -171,9 +155,6 @@ function Contact() {
   return (
     <div className="contact-page">
       <div className="contact-container">
-
-        {/* ================= HEADER ================= */}
-
         <div className="contact-header">
           <h1>📩 Contact Owner</h1>
 
@@ -183,17 +164,11 @@ function Contact() {
           </p>
         </div>
 
-        {/* ================= PROPERTY INFO ================= */}
-
         <div className="property-info">
           <h2>{property.title}</h2>
-
           <p>📍 {property.location}</p>
-
           <p>💰 {property.price}</p>
         </div>
-
-        {/* ================= WEBSITE STATUS MESSAGE ================= */}
 
         {statusMessage && (
           <div
@@ -202,65 +177,65 @@ function Contact() {
                 ? "success-message"
                 : "error-message"
             }`}
+            role="status"
+            aria-live="polite"
           >
             {statusMessage}
           </div>
         )}
 
-        {/* ================= FORM ================= */}
-
         <form
           onSubmit={handleSubmit}
           className="contact-form"
         >
-
-          {/* NAME */}
-
           <div className="form-group">
-            <label>Your Name</label>
+            <label htmlFor="user_name">Your Name</label>
 
             <input
+              id="user_name"
               type="text"
               name="user_name"
               value={formData.user_name}
               onChange={handleChange}
               placeholder="Enter your name"
+              autoComplete="name"
               required
             />
           </div>
 
-          {/* PHONE */}
-
           <div className="form-group">
-            <label>Your Phone Number</label>
+            <label htmlFor="user_phone">
+              Your Phone Number
+            </label>
 
             <input
+              id="user_phone"
               type="tel"
               name="user_phone"
               value={formData.user_phone}
               onChange={handleChange}
-              placeholder="Enter your phone number"
-              maxLength="10"
+              placeholder="Enter your 10-digit phone number"
+              autoComplete="tel"
+              maxLength={10}
+              inputMode="numeric"
+              pattern="[0-9]{10}"
               required
             />
           </div>
 
-          {/* MESSAGE */}
-
           <div className="form-group">
-            <label>Message</label>
+            <label htmlFor="message">Message</label>
 
             <textarea
+              id="message"
               name="message"
               value={formData.message}
               onChange={handleChange}
               placeholder="Enter your message"
-              rows="5"
+              rows={5}
               required
             />
           </div>
-
-          {/* SEND BUTTON */}
 
           <button
             type="submit"
@@ -271,18 +246,15 @@ function Contact() {
               ? "📤 Sending..."
               : "📩 Send Enquiry"}
           </button>
-
         </form>
 
-        {/* ================= BACK BUTTON ================= */}
-
         <button
+          type="button"
           className="back-btn"
           onClick={() => navigate(`/property/${id}`)}
         >
           ← Back to Property
         </button>
-
       </div>
     </div>
   );
